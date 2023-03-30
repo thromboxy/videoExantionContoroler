@@ -128,7 +128,7 @@
                     return;
                 }
 
-                confirmButton = ocument.querySelector('#confirm-button');
+                confirmButton = document.querySelector('#confirm-button');
                 if(!confirmButton){
                     confirmButton.click();
                 }
