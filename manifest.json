@@ -1,0 +1,41 @@
+{
+   "content_scripts": [ {
+      "permissions": ["scripting", "storage"],
+      "all_frames": false,
+      "js": [ "js/common.js", "js/main-youtube.js" ],
+      "matches": [ "https://www.youtube.com/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": false,
+      "js": [ "js/common.js", "js/main-niconico.js" ],
+      "matches": [ "https://www.nicovideo.jp/watch/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": false,
+      "js": [ "js/common.js", "js/main-twitch.js" ],
+      "matches": [ "https://www.twitch.tv/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": false,
+      "js": [ "js/common.js", "js/main-amazon.js" ],
+      "matches": [ "https://www.amazon.co.jp/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": false,
+      "js": [ "js/common.js", "js/main-danime.js" ],
+      "matches": [ "https://anime.dmkt-sp.jp/*" ],
+      "run_at": "document_end"
+   } ],
+   "content_security_policy": {
+      "default-src": "self"
+   },
+   "description": "Chrome Extension for video controller",
+   "icons": {
+      "128": "icon.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAigpMDmT6g+ToaDPZKfuaseRVpLiBvpTBO7hWNR5742fYNPE/ZBDhoZ2U322vp6KfcRIi/fosFr83KFksZvO5lzEijrLzclATSMfbDLUHy/etmkd3xSfG5tshP8U76ZnItAg1anMaYOhqcQZFFSrpEAlITkziu9aVZe9SN1+TeaS68+/plWbng+TZNI90tg/NGIWc0PutM5c4E/3SSjCD+b21JhlGuyabts42FbnIbcaf/IF5y4dmXXw2afHeDGmqIGk1/o0MKCIbq00c8CJHYYm3SERnckUgUecaH2rq3JEUM6DsLwRLxfULMNYqVSTuvFzcfUGOUSTPyJhQ4uPzXwIDAQAB",
+   "manifest_version": 3,
+   "name": "Video Expansion Controller",
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.2.11"
+}
