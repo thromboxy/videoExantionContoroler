@@ -129,7 +129,7 @@
                 }
 
                 confirmButton = document.querySelector('#confirm-button');
-                if(!confirmButton){
+                if(confirmButton){
                     confirmButton.click();
                 }
                 videoSrc = site.getVideoSrc();
