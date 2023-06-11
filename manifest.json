@@ -33,9 +33,8 @@
    "icons": {
       "128": "icon.png"
    },
-   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAigpMDmT6g+ToaDPZKfuaseRVpLiBvpTBO7hWNR5742fYNPE/ZBDhoZ2U322vp6KfcRIi/fosFr83KFksZvO5lzEijrLzclATSMfbDLUHy/etmkd3xSfG5tshP8U76ZnItAg1anMaYOhqcQZFFSrpEAlITkziu9aVZe9SN1+TeaS68+/plWbng+TZNI90tg/NGIWc0PutM5c4E/3SSjCD+b21JhlGuyabts42FbnIbcaf/IF5y4dmXXw2afHeDGmqIGk1/o0MKCIbq00c8CJHYYm3SERnckUgUecaH2rq3JEUM6DsLwRLxfULMNYqVSTuvFzcfUGOUSTPyJhQ4uPzXwIDAQAB",
    "manifest_version": 3,
    "name": "Video Expansion Controller",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.2.14"
+   "version": "2.2.14"
 }
