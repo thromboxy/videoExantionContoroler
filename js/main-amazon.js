@@ -52,6 +52,8 @@
             let skipFlag = false;
             if (localStorage.getItem(AD_SKIP_CACHE_NAME)) {
                 skipFlag = localStorage.getItem(AD_SKIP_CACHE_NAME);
+            } else {
+                localStorage.setItem(AD_SKIP_CACHE_NAME, false)
             }
             AdSkipButton.checked = JSON.parse(skipFlag.toLowerCase());
 
@@ -68,9 +70,9 @@
         skipAd: function () {
             let skipButton = site.getSkipButton();
             //alert(skipButton);
-            if(skipButton){
+            if (skipButton) {
                 let skipFlag = document.querySelector('#' + SKIP_CHECKBOX_ID).checked;
-                if(skipFlag){
+                if (skipFlag) {
                     skipButton.click();
                 }
             }
