@@ -23,6 +23,10 @@ const SPEED_DOWN_ID = 'speed_down';
 const TIME_ADVANCE_ID = 'time_advance';
 const TIME_BACK_ID = 'time_back';
 
+// AMAZON用
+const SKIP_CHECKBOX_ID = 'skip_checkbox';
+const SKIP_CHECKBOX_LABEL = 'skip_checkbox_label';
+
 let site, core, footer, video, videoSrc, videoSrcOld, interval, seekBar, liveFlag, resumeTime;
 let url = location.href;
 let urlOld;
@@ -45,11 +49,15 @@ function removeBottun() {
     let speedSpanButton = document.querySelector('#' + SPEED_SPAN_ID);
     let speedUpButton = document.querySelector('#' + SPEED_UP_ID);
 
+    /* 広告ｽｷｯﾌﾟラベル*/
+    let adSkipLabel = document.querySelector('#' + SKIP_CHECKBOX_LABEL);
+
     if (timeBackButton) { timeBackButton.remove(); }
     if (timeAdvanceButton) { timeAdvanceButton.remove(); }
     if (speedDownButton) { speedDownButton.remove(); }
     if (speedSpanButton) { speedSpanButton.remove(); }
     if (speedUpButton) { speedUpButton.remove(); }
+    if (adSkipLabel) { adSkipLabel.remove(); }
 
     
     if(keyEvent){
