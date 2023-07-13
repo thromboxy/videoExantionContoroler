@@ -49,7 +49,7 @@
         setSkipButton: function () {
             // 広告ｽｷｯﾌﾟ設定
             let AdSkipButton = document.querySelector('#' + SKIP_CHECKBOX_ID);
-            let skipFlag = false;
+            let skipFlag = 'false';
             if (localStorage.getItem(AD_SKIP_CACHE_NAME)) {
                 skipFlag = localStorage.getItem(AD_SKIP_CACHE_NAME);
             } else {
