@@ -31,7 +31,11 @@
             return false;
         },
         getSkipButton: function () {
-            return document.querySelector('.fu4rd6c.f1cw2swo');
+            var button = document.querySelector('.fu4rd6c.f1cw2swo');
+            if('スキップ' == button.innerText){
+                return button;
+            }
+            return null;
         },
         /* ボタンを設置する */
         setButton: function () {
