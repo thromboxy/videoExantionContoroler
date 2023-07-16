@@ -1,3 +1,8 @@
+https://chrome.google.com/webstore/detail/video-expansion-controlle/ibpgfjbmoldfbhnhgafglglmpgnmammk
+
+いくつかの動画サイトに再生速度変更ボタンとシークボタンをついかするchrome拡張機能
+適当に気になった広告の非表示機能等もひっそり実装してる
+
 v1.2.5
 数字キーによる動画シーク機能を追加。
 
