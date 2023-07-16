@@ -32,7 +32,7 @@
         },
         getSkipButton: function () {
             var button = document.querySelector('.fu4rd6c.f1cw2swo');
-            if('スキップ' == button.innerText){
+            if(button && 'スキップ' == button.innerText){
                 return button;
             }
             return null;
@@ -153,7 +153,7 @@
                     clearInterval(interval);
                     core.initialize();
                 }
-            }, 500);
+            }, 1000);
         },
     };
     core.initialize();
