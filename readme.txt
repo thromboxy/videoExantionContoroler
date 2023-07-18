@@ -1,3 +1,11 @@
+対応サイト：
+・YouTube(https://www.youtube.com)
+・ニコニコ動画(https://www.nicovideo.jp)
+・Amazon Prime Video(https://www.amazon.co.jp)
+・Twitch(https://www.twitch.tv)
+・TVer(https://tver.jp)
+・dアニメストア(https://anime.dmkt-sp.jp) (動作保証無し)
+
 v1.2.5
 数字キーによる動画シーク機能を追加。
 
@@ -19,3 +27,6 @@ Amazon Prime Videoの広告ｽｷｯﾌﾟ機能追加(β)
 
 v1.3.3
 YouTubeのシアターモード時に動作しない問題を修正
+
+v1.4.0
+TVerに対応
