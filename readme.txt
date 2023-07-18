@@ -6,6 +6,10 @@
 ・TVer(https://tver.jp)
 ・dアニメストア(https://anime.dmkt-sp.jp) (動作保証無し)
 
+https://chrome.google.com/webstore/detail/video-expansion-controlle/ibpgfjbmoldfbhnhgafglglmpgnmammk
+
+動画サイトに再生速度変更ボタンとシークボタンやマウスホイールによる操作機能を追加するchrome拡張機能
+
 v1.2.5
 数字キーによる動画シーク機能を追加。
 
