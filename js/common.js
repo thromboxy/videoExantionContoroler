@@ -96,7 +96,7 @@ function saveCache() {
 function saveResumeCache() {
     if (!RESUME_CACHE_NAME || video.paused) return;
     if (!site.getLiveFlag()) {
-        if (video.currentTime < 5 || video.currentTime > video.duration - 10) {
+        if (video.currentTime < 60 || video.currentTime > video.duration - 60) {
             localStorage.removeItem(RESUME_CACHE_NAME);
         } else {
             localStorage.setItem(RESUME_CACHE_NAME, video.currentTime - 2);

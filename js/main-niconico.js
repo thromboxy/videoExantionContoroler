@@ -73,6 +73,16 @@
             }else{
                 RESUME_CACHE_NAME = null;
             }
+        },
+        /* 提供画面ｽｷｯﾌﾟ */
+        clickNextButton: function () {
+            let mainView = document.querySelector('.VideoSymbolContainer-canvas');
+            //console.log(SCRIPT_NAME, mainView);
+            let nextButton = document.querySelector('.ActionButton.ControllerButton.PlayerSkipNextButton');
+            //console.log(SCRIPT_NAME, nextButton);
+            if(nextButton && !mainView){
+                nextButton.click();
+            }
         }
     };
 
@@ -153,6 +163,7 @@
                     core.initialize();
                 }
                 saveResumeCache();
+                site.clickNextButton();
             }, 100);
         },
     };
