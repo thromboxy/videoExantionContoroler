@@ -7,10 +7,13 @@
 
     NUM_KEY_FLAG = true;
 
-
+    let posX, posY, singleClickFlag, clickTimerId, replayFlag;
 
     /* サイト定義 */
     site = {
+        getCanvas: function () {
+            return document.querySelector('.controller_container__PMXA9');
+        },
         getFooter: function () {
             return document.querySelector('.controller_hidable__DnlQd');
         },
@@ -39,26 +42,40 @@
         },
         /* 自動動画再生 */
         autoPlayVideo: function () {
-
             let button = document.querySelector('.button_button__GOl5m.big-play-button_host__z6CnM');
-            if(button) { 
+            if (button && !replayFlag) {
                 button.click();
             }
         },
-        /* 再生停止ボタンをクリック */
-        playButtonClick: function (e) {
-            if (e.target.classList[0] == 'controller_container__PMXA9') {
-                let posX = window.scrollX;
-                let posY = window.scrollY;
-                document.querySelector('.button_button__GOl5m.toggle-playing-button_controlButton__aiuq3').click();
+        /* 画面をクリック */
+        canvasClick: function (e) {
+            singleClickFlag = !singleClickFlag;
 
-                window.scroll(posX, posY);
+            if (singleClickFlag) {
+                clickTimerId = window.setTimeout(singleClick, 250, e);
+            } else {
+                window.clearTimeout(clickTimerId);
+                singleClickFlag = false;
+                doubleClick(e)
             }
-        },
-        /* フルスクリーンボタンをクリック */
-        fullScreenButtonClick: function (e) {
-            if (e.target.classList[0] == 'controller_container__PMXA9') {
-                document.querySelector('img[alt="全画面').click();
+
+            /* 再生停止ボタンをクリック */
+            function singleClick(e) {
+                if (e.target.classList[0] == 'controller_container__PMXA9') {
+                    posX = window.scrollX;
+                    posY = window.scrollY;
+                    document.querySelector('.button_button__GOl5m.toggle-playing-button_controlButton__aiuq3').click();
+    
+                    window.scroll(posX, posY);
+                }
+                singleClickFlag = false;
+            }
+
+            /* フルスクリーンボタンをクリック */
+            function doubleClick(e) {
+                if (e.target.classList[0] == 'controller_container__PMXA9') {
+                    document.querySelector('img[alt="全画面').click();
+                }
             }
         },
         getLiveFlag: function () {
@@ -130,12 +147,13 @@
             video = null;
             footer = null;
             seekBar = null;
+            let canvas = site.getCanvas();
             video = site.getVideo();
             footer = site.getFooter();
             seekBar = site.getSeekBar();
 
 
-            if (!footer || !video || !seekBar) {
+            if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
                     //console.log(SCRIPT_NAME, 'initialize timeout...');
                     site.autoPlayVideo();
@@ -143,7 +161,6 @@
                 }, 500);
                 return;
             }
-
 
             /* キャッシュ読み込み */
             readCache();
@@ -160,11 +177,7 @@
                 footer = site.getFooter();
             }
 
-            document.querySelector('.controller_container__PMXA9').addEventListener("click", site.playButtonClick, {
-                passive: false
-            });
-
-            document.querySelector('.controller_container__PMXA9').addEventListener("dblclick", site.fullScreenButtonClick, {
+            canvas.addEventListener("click", site.canvasClick, e =>  {
                 passive: false
             });
 
@@ -180,10 +193,11 @@
             interval = window.setInterval(function () {
                 //console.log(SCRIPT_NAME, 'interval...');
                 video = site.getVideo();
-
-                if (!video) {
+                let canvas = site.getCanvas();
+                if (!video || !canvas) {
                     clearInterval(interval);
                     core.initialize();
+                    replayFlag = true;
                     return;
                 }
 

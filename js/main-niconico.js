@@ -8,10 +8,12 @@
 
     sheet.insertRule('.SideFollowAdContainer, #RectangleAd, .NicoSpotAdContainer, .PreVideoStartPremiumLinkOnEconomyTimeContainer, .SeekBarHoverItem, .MainContainer-marquee, .PlayerOverlayBottomMessage.PreVideoStartPremiumLinkContainer { display:none; style:"";}', 1);
 
-    let marquee, posX, posY;
-
+    let marquee, posX, posY, singleClickFlag, clickTimerId;
     /* サイト定義 */
     site = {
+        getCanvas: function () {
+            return document.querySelector('.VideoSymbolContainer-canvas');
+        },
         getFooter: function () {
             return document.querySelector('.ControllerContainer-area');
         },
@@ -28,23 +30,38 @@
                 return null;
             }
         },
-        /* 再生停止ボタンをクリック */
-        playButtonClick: function () {
-            posX = window.scrollX;
-            posY = window.scrollY;
-            if (document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton')) {
-                document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton').click();
-            } else {
-                document.querySelector('.ActionButton.ControllerButton.PlayerPauseButton').click();
+        /* 画面をクリック */
+        canvasClick: function () {
+            singleClickFlag = !singleClickFlag;
+            
+            if(singleClickFlag){
+                clickTimerId = window.setTimeout(singleClick, 250);
+            }else{
+                window.clearTimeout(clickTimerId);
+                singleClickFlag = false;
+                doubleClick()
             }
-            window.scroll(posX,posY);
-        },
-        /* フルスクリーンボタンをクリック */
-        fullScreenButtonClick: function () {
-            if (document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton')) {
-                document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton').click();
-            } else {
-                document.querySelector('.ActionButton.ControllerButton.DisableFullScreenButton').click();
+
+            /* 再生停止ボタンをクリック */
+            function singleClick() {
+                posX = window.scrollX;
+                posY = window.scrollY;
+                if (document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton')) {
+                    document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton').click();
+                } else {
+                    document.querySelector('.ActionButton.ControllerButton.PlayerPauseButton').click();
+                }
+                window.scroll(posX, posY);
+                singleClickFlag = false;
+            }
+
+            /* フルスクリーンボタンをクリック */
+            function doubleClick() {
+                if (document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton')) {
+                    document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton').click();
+                } else {
+                    document.querySelector('.ActionButton.ControllerButton.DisableFullScreenButton').click();
+                }
             }
         },
         getLiveFlag: function () {
@@ -68,9 +85,9 @@
         /* レジュームキャッシュ名設定 */
         setResumeCacheName: function () {
             let sm = location.href.match('/watch/[a-z][a-z][0-9]{2,20}');
-            if(sm){
+            if (sm) {
                 RESUME_CACHE_NAME = CACHE_NAME + sm;
-            }else{
+            } else {
                 RESUME_CACHE_NAME = null;
             }
         },
@@ -79,9 +96,12 @@
             let mainView = document.querySelector('.VideoSymbolContainer-canvas');
             //console.log(SCRIPT_NAME, mainView);
             let nextButton = document.querySelector('.ActionButton.ControllerButton.PlayerSkipNextButton');
+            let continuousLabel = document.querySelector('.Toggle.is-checked.is-append')?.querySelector('.Toggle-checkbox')?.checked;
             //console.log(SCRIPT_NAME, nextButton);
-            if(nextButton && !mainView){
+            if (continuousLabel && !mainView) {
                 nextButton.click();
+                clearInterval(interval);
+                core.initialize();
             }
         }
     };
@@ -96,11 +116,12 @@
             video = null;
             footer = null;
             seekBar = null;
+            let canvas = site.getCanvas();
             video = site.getVideo();
             footer = site.getFooter();
             seekBar = site.getSeekBar();
 
-            if (!footer || !video || !seekBar) {
+            if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
                     // console.log(SCRIPT_NAME, 'initialize timeout...');
                     core.initialize();
@@ -112,7 +133,7 @@
 
             /* キャッシュ読み込み */
             readCache();
-            
+
             videoSrc = site.getVideoSrc();
 
             site.setResumeCacheName();
@@ -125,11 +146,7 @@
 
             }
 
-            document.querySelector('.VideoSymbolContainer-canvas').addEventListener("click", site.playButtonClick, {
-                passive: false
-            });
-            
-            document.querySelector('.VideoSymbolContainer-canvas').addEventListener("dblclick", site.fullScreenButtonClick, {
+            canvas.addEventListener("click", site.canvasClick, {
                 passive: false
             });
 
@@ -154,8 +171,6 @@
 
                 videoSrc = site.getVideoSrc();
                 video.playbackRate = VIDEO_SPEED;
-
-                
 
                 if (videoSrc != videoSrcOld) {
                     videoSrcOld = videoSrc;
