@@ -9,7 +9,7 @@
         getFooter: function () {
             let selecter = '.ytp-left-controls';
             // シアターモードの場合のプレイヤー
-            let player = document.querySelector('#player-wide-container.ytd-watch-flexy');
+            let player = document.querySelector('#player-container.ytd-watch-flexy');
             if (player && player.querySelector(selecter)) {
                 return player.querySelector(selecter);
             }
@@ -25,7 +25,7 @@
         getSeekBar: function () {
             let selecter = '.ytp-progress-bar-container';
             // シアターモードの場合のプレイヤー
-            let player = document.querySelector('#player-wide-container.ytd-watch-flexy');
+            let player = document.querySelector('#player-container.ytd-watch-flexy');
             if (player && player.querySelector(selecter)) {
                 return player.querySelector(selecter);
             }
@@ -87,7 +87,7 @@
 
             if (!footer || !video || !seekBar) {
                 window.setTimeout(function () {
-                    //console.log(SCRIPT_NAME, video, footer, seekBar, 'initialize timeout...');
+                    console.log(SCRIPT_NAME, video, footer, seekBar, 'initialize timeout...');
                     core.initialize();
                 }, 1000);
                 return;
