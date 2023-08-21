@@ -9,15 +9,10 @@
         getFooter: function () {
             let selecter = '.ytp-left-controls';
             // シアターモードの場合のプレイヤー
-            let player = document.querySelector('#player-container.ytd-watch-flexy');
-            if (player && player.querySelector(selecter)) {
+            let player = document.querySelector('#ytd-player');
+            if (player) {
                 return player.querySelector(selecter);
             }
-            player = document.querySelector('#player-container-inner.ytd-watch-flexy');
-            if (player && player.querySelector(selecter)) {
-                return player.querySelector(selecter);
-            }
-            return null;
         },
         getVideo: function () {
             return document.querySelector('video[src*="blob:https://www.youtube.com/"]');
@@ -25,15 +20,10 @@
         getSeekBar: function () {
             let selecter = '.ytp-progress-bar-container';
             // シアターモードの場合のプレイヤー
-            let player = document.querySelector('#player-container.ytd-watch-flexy');
-            if (player && player.querySelector(selecter)) {
+            let player = document.querySelector('#ytd-player');
+            if (player) {
                 return player.querySelector(selecter);
             }
-            player = document.querySelector('#player-container-inner.ytd-watch-flexy');
-            if (player && player.querySelector(selecter)) {
-                return player.querySelector(selecter);
-            }
-            return null;
         },
         getLiveFlag: function () {
             if (document.querySelector('.ytp-time-display.notranslate.ytp-live')) {
