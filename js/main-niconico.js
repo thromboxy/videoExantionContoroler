@@ -33,7 +33,6 @@
         /* 画面をクリック */
         canvasClick: function () {
             singleClickFlag = !singleClickFlag;
-            
             if(singleClickFlag){
                 clickTimerId = window.setTimeout(singleClick, 250);
             }else{
@@ -93,12 +92,18 @@
         },
         /* 提供画面ｽｷｯﾌﾟ */
         clickNextButton: function () {
-            let mainView = document.querySelector('.VideoSymbolContainer-canvas');
-            //console.log(SCRIPT_NAME, mainView);
+            let mainCanvas = site.getCanvas();
+            let supporterCanvas = document.querySelector('#SupporterView-canvas');
             let nextButton = document.querySelector('.ActionButton.ControllerButton.PlayerSkipNextButton');
             let continuousLabel = document.querySelector('.Toggle.is-checked.is-append')?.querySelector('.Toggle-checkbox')?.checked;
-            //console.log(SCRIPT_NAME, nextButton);
-            if (continuousLabel && !mainView) {
+            if(!mainCanvas && supporterCanvas){
+                supporterCanvas.addEventListener("click", site.canvasClick, {
+                    passive: false
+                });
+                clearInterval(interval);
+                core.initialize();
+            }
+            if (!mainCanvas && continuousLabel) {
                 nextButton.click();
                 clearInterval(interval);
                 core.initialize();
@@ -123,7 +128,7 @@
 
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
-                    // console.log(SCRIPT_NAME, 'initialize timeout...');
+                    //　console.log(SCRIPT_NAME, 'initialize timeout...');
                     core.initialize();
                 }, 1000);
                 return;
@@ -143,12 +148,9 @@
                 site.setButton();
                 setOnClick();
                 setEvent();
-
             }
 
-            canvas.addEventListener("click", site.canvasClick, {
-                passive: false
-            });
+            canvas.addEventListener("click", site.canvasClick);
 
             video.playbackRate = VIDEO_SPEED;
             showVideoSpeed();

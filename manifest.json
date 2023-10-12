@@ -36,10 +36,16 @@
    },
    "description": "Chrome Extension for video controller",
    "icons": {
-      "128": "icon.png"
+      "16": "./icon/icon16.png",
+      "48": "./icon/icon48.png",
+      "128": "./icon/icon128.png"
+   },
+   "action": {
+      "default_popup": "popup.html",
+      "default_title": "options"
    },
    "manifest_version": 3,
    "name": "Video Expansion Controller",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.4.4"
+   "version": "1.4.5"
 }

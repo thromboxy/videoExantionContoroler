@@ -10,6 +10,9 @@ https://chrome.google.com/webstore/detail/video-expansion-controlle/ibpgfjbmoldf
 
 動画サイトに再生速度変更ボタンとシークボタンやマウスホイールによる操作機能を追加するchrome拡張機能
 
+v1.4.5
+ニコニコ動画の全画面表示操作機能を改善
+
 v1.4.4
 v1.4.3
 Youtubeの変更に対応
