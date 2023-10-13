@@ -6,6 +6,7 @@
 
     NUM_KEY_FLAG = true;
 
+    // 広告非表示等
     sheet.insertRule('.SideFollowAdContainer, #RectangleAd, .NicoSpotAdContainer, .PreVideoStartPremiumLinkOnEconomyTimeContainer, .SeekBarHoverItem, .MainContainer-marquee, .PlayerOverlayBottomMessage.PreVideoStartPremiumLinkContainer { display:none; style:"";}', 1);
 
     let marquee, posX, posY, singleClickFlag, clickTimerId;
@@ -108,6 +109,13 @@
                 clearInterval(interval);
                 core.initialize();
             }
+        },
+        /* ブラックモード */
+        setBlackMode: function () {
+            let mylistList = document.querySelectorAll('.MylistSideContainer-mylistList>*');
+            mylistList?.forEach(element => element.style.background='black');
+            let seriesList = document.querySelectorAll('.VideoSideContainer-seriesList>*');
+            seriesList?.forEach(element => element.style.background='black');
         }
     };
 
@@ -129,6 +137,7 @@
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
                     //　console.log(SCRIPT_NAME, 'initialize timeout...');
+                    site.setBlackMode();
                     core.initialize();
                 }, 1000);
                 return;

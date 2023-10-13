@@ -8,7 +8,7 @@
    }, {
       "all_frames": false,
       "js": [ "js/common.js", "js/main-niconico.js" ],
-      "matches": [ "https://www.nicovideo.jp/watch/*" ],
+      "matches": [ "https://www.nicovideo.jp/watch/*","https://www.nicovideo.jp/user/*", "https://www.nicovideo.jp/my/mylist*" ],
       "run_at": "document_end"
    }, {
       "all_frames": false,
@@ -47,5 +47,5 @@
    "manifest_version": 3,
    "name": "Video Expansion Controller",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.4.5"
+   "version": "1.5.0"
 }
