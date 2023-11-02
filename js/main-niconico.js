@@ -112,10 +112,13 @@
         },
         /* ブラックモード */
         setBlackMode: function () {
+            let gray = '#202020'
             let mylistList = document.querySelectorAll('.MylistSideContainer-mylistList>*');
-            mylistList?.forEach(element => element.style.background='black');
+            mylistList?.forEach(element => element.style.background=gray);
             let seriesList = document.querySelectorAll('.VideoSideContainer-seriesList>*');
-            seriesList?.forEach(element => element.style.background='black');
+            seriesList?.forEach(element => element.style.background=gray);
+            let seriesContainer = document.querySelectorAll('.NC-Link.NC-MediaObject-contents');
+            seriesContainer?.forEach(element => element.style.background= gray);
         }
     };
 
