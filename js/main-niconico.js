@@ -7,7 +7,7 @@
     NUM_KEY_FLAG = true;
 
     // 広告非表示等
-    sheet.insertRule('.SideFollowAdContainer, #RectangleAd, .NicoSpotAdContainer, .PreVideoStartPremiumLinkOnEconomyTimeContainer, .SeekBarHoverItem, .MainContainer-marquee, .PlayerOverlayBottomMessage.PreVideoStartPremiumLinkContainer { display:none; style:"";}', 1);
+    sheet.insertRule('.ActionButton.PlaybackRateButton, .SideFollowAdContainer, #RectangleAd, .NicoSpotAdContainer, .PreVideoStartPremiumLinkOnEconomyTimeContainer, .MainContainer-marquee, .PlayerOverlayBottomMessage.PreVideoStartPremiumLinkContainer { display:none; style:"";}', 1);
 
     let marquee, posX, posY, singleClickFlag, clickTimerId;
     /* サイト定義 */

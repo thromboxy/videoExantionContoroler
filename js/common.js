@@ -17,11 +17,12 @@ VOLUME_WIDTH = 0.022;
 let CACHE_NAME, RESUME_CACHE_NAME;
 
 const SCRIPT_NAME = 'VideoController';
-const SPEED_UP_ID = 'speed_up';
-const SPEED_SPAN_ID = 'speed_span';
-const SPEED_DOWN_ID = 'speed_down';
-const TIME_ADVANCE_ID = 'time_advance';
-const TIME_BACK_ID = 'time_back';
+const FOOTER_VIDEO_EXPANSION_CONTROLLER = 'vec_';
+const SPEED_UP_ID = FOOTER_VIDEO_EXPANSION_CONTROLLER + 'speed_up';
+const SPEED_SPAN_ID = FOOTER_VIDEO_EXPANSION_CONTROLLER + 'speed_span';
+const SPEED_DOWN_ID = FOOTER_VIDEO_EXPANSION_CONTROLLER + 'speed_down';
+const TIME_ADVANCE_ID = FOOTER_VIDEO_EXPANSION_CONTROLLER + 'time_advance';
+const TIME_BACK_ID = FOOTER_VIDEO_EXPANSION_CONTROLLER + 'time_back';
 
 // AMAZON用
 const SKIP_CHECKBOX_ID = 'skip_checkbox';
@@ -59,11 +60,11 @@ function removeBottun() {
     if (speedUpButton) { speedUpButton.remove(); }
     if (adSkipLabel) { adSkipLabel.remove(); }
 
-    
-    if(keyEvent){
+
+    if (keyEvent) {
         document.body.removeEventListener('keydown', keyEvent);
     }
-    
+
 }
 
 /* キャッシュ読み込み */
@@ -124,8 +125,6 @@ function setOnClick() {
     };
     speedDownButton.onclick = function () {
         VIDEO_SPEED = setPlaybackRate(-SPEED_WIDTH);
-        showVideoSpeed();
-        saveCache();
         this.blur();
     };
     speedSpanButton.onclick = function () {
@@ -137,8 +136,6 @@ function setOnClick() {
     };
     speedUpButton.onclick = function () {
         VIDEO_SPEED = setPlaybackRate(SPEED_WIDTH);
-        showVideoSpeed();
-        saveCache();
         this.blur();
     };
 
@@ -175,6 +172,9 @@ function setOnClick() {
 
 /* イベント設定 */
 function setEvent() {
+
+    let speedButtons = document.querySelectorAll('[id^="' + FOOTER_VIDEO_EXPANSION_CONTROLLER + 'speed_"]');
+    let seekButtons = document.querySelectorAll('[id^="' + FOOTER_VIDEO_EXPANSION_CONTROLLER + 'time_"]');
 
     document.body.addEventListener('keydown', keyEvent);
     /* キーバインド設定 */
@@ -219,20 +219,37 @@ function setEvent() {
     //         let videoTimeDiv = video.duration / 10;
     //         setCurrentTime((videoTimeDiv * 9) - video.currentTime);
     //     }
-        
+
     // });
 
 
-    /* マウスオーバフッター */
+    /* マウスオーバシークボタン */
+    seekButtons.forEach(function (element) {
 
-    footer.addEventListener("mouseover", function () {
-        document.addEventListener('wheel', mouseOverFooter, {
-            passive: false
+        element.addEventListener("mouseover", function () {
+            document.addEventListener('wheel', mouseOverFooter, {
+                passive: false
+            });
+        });
+        element.addEventListener("mouseout", function () {
+            document.removeEventListener('wheel', mouseOverFooter, {
+                passive: false
+            });
         });
     });
-    footer.addEventListener("mouseout", function () {
-        document.removeEventListener('wheel', mouseOverFooter, {
-            passive: false
+
+    /* マウスオーバスピードボタン */
+    speedButtons.forEach(function (element) {
+
+        element.addEventListener("mouseover", function () {
+            document.addEventListener('wheel', mouseOverSpeedButton, {
+                passive: false
+            });
+        });
+        element.addEventListener("mouseout", function () {
+            document.removeEventListener('wheel', mouseOverSpeedButton, {
+                passive: false
+            });
         });
     });
 
@@ -271,6 +288,17 @@ function setEvent() {
             volume = setVolume(-VOLUME_WIDTH);
         }
         site.setVolumeBar(volume);
+    }
+
+    /* マウスオーバスピードボタン */
+    function mouseOverSpeedButton(event) {
+        event.preventDefault();
+        if (event.wheelDelta > 0) {
+            setPlaybackRate(SPEED_WIDTH);
+        } else {
+            setPlaybackRate(-SPEED_WIDTH);
+        }
+
     }
 }
 
@@ -345,6 +373,9 @@ function setPlaybackRate(width) {
         rate = 0.1;
     }
     video.playbackRate = rate;
+    VIDEO_SPEED = rate;
+    saveCache();
+    showVideoSpeed();
     return rate;
 }
 
