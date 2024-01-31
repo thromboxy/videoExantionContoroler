@@ -111,15 +111,15 @@
             }
         },
         /* ブラックモード */
-        setBlackMode: function () {
-            let gray = '#202020'
-            let mylistList = document.querySelectorAll('.MylistSideContainer-mylistList>*');
-            mylistList?.forEach(element => element.style.background=gray);
-            let seriesList = document.querySelectorAll('.VideoSideContainer-seriesList>*');
-            seriesList?.forEach(element => element.style.background=gray);
-            let seriesContainer = document.querySelectorAll('.NC-Link.NC-MediaObject-contents');
-            seriesContainer?.forEach(element => element.style.background= gray);
-        }
+        // setBlackMode: function () {
+        //     let gray = '#202020'
+        //     let mylistList = document.querySelectorAll('.MylistSideContainer-mylistList>*');
+        //     mylistList?.forEach(element => element.style.background=gray);
+        //     let seriesList = document.querySelectorAll('.VideoSideContainer-seriesList>*');
+        //     seriesList?.forEach(element => element.style.background=gray);
+        //     let seriesContainer = document.querySelectorAll('.NC-Link.NC-MediaObject-contents');
+        //     seriesContainer?.forEach(element => element.style.background= gray);
+        // }
     };
 
     /* 処理本体 */
@@ -140,7 +140,6 @@
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
                     //　console.log(SCRIPT_NAME, 'initialize timeout...');
-                    site.setBlackMode();
                     core.initialize();
                 }, 1000);
                 return;

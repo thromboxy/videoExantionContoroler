@@ -77,7 +77,7 @@
 
             if (!footer || !video || !seekBar) {
                 window.setTimeout(function () {
-                    console.log(SCRIPT_NAME, video, footer, seekBar, 'initialize timeout...');
+                    // console.log(SCRIPT_NAME, video, footer, seekBar, 'initialize timeout...');
                     core.initialize();
                 }, 1000);
                 return;
