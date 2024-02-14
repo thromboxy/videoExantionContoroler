@@ -158,7 +158,7 @@
                     //console.log(SCRIPT_NAME, 'initialize timeout...');
                     site.autoPlayVideo();
                     core.initialize();
-                }, 500);
+                }, INITIALIZE_TIMER);
                 return;
             }
 

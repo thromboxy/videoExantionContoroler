@@ -75,7 +75,7 @@
                 window.setTimeout(function () {
                     // console.log(SCRIPT_NAME, 'initialize timeout...');
                     core.initialize();
-                }, 1000);
+                }, INITIALIZE_TIMER);
                 return;
             }
 

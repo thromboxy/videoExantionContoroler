@@ -5,6 +5,7 @@ let TIME_WIDTH;
 let TIME_WHEEL_WIDTH;
 let SPEED_WIDTH;
 let VOLUME_WIDTH;
+let INITIALIZE_TIMER;
 
 let NUM_KEY_FLAG;
 
@@ -13,6 +14,7 @@ TIME_WIDTH = 5;
 TIME_WHEEL_WIDTH = 1;
 SPEED_WIDTH = 0.05;
 VOLUME_WIDTH = 0.022;
+INITIALIZE_TIMER = 300;
 
 let CACHE_NAME, RESUME_CACHE_NAME;
 
@@ -82,7 +84,7 @@ function readResumeCache() {
         resumeTime = Number(localStorage.getItem(RESUME_CACHE_NAME));
         window.setTimeout(function () {
             video.currentTime = resumeTime;
-        }, 500);
+        }, 1000);
     }
 }
 
@@ -95,12 +97,18 @@ function saveCache() {
 
 /* レジュームキャッシュセーブ */
 function saveResumeCache() {
+    if(resumeTime){
+        let timeDiff = Math.abs(video.currentTime - resumeTime);
+        if(!timeDiff || timeDiff < 5) return;
+    }
+    
     if (!RESUME_CACHE_NAME || video.paused) return;
     if (!site.getLiveFlag()) {
-        if (video.currentTime < 60 || video.currentTime > video.duration - 60) {
+        if (video.currentTime < 120 || video.currentTime > video.duration - 120) {
             localStorage.removeItem(RESUME_CACHE_NAME);
         } else {
             localStorage.setItem(RESUME_CACHE_NAME, video.currentTime - 2);
+            resumeTime = video.currentTime - 2;
         }
     }
 }
