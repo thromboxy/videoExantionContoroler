@@ -47,35 +47,18 @@
                 button.click();
             }
         },
-        /* 画面をクリック */
-        canvasClick: function (e) {
-            singleClickFlag = !singleClickFlag;
+        singleClick: function(e) {
+            if (e.target.classList[0] == 'controller_container__PMXA9') {
+                posX = window.scrollX;
+                posY = window.scrollY;
+                document.querySelector('.button_button__GOl5m.toggle-playing-button_controlButton__aiuq3').click();
 
-            if (singleClickFlag) {
-                clickTimerId = window.setTimeout(singleClick, 250, e);
-            } else {
-                window.clearTimeout(clickTimerId);
-                singleClickFlag = false;
-                doubleClick(e)
+                window.scroll(posX, posY);
             }
-
-            /* 再生停止ボタンをクリック */
-            function singleClick(e) {
-                if (e.target.classList[0] == 'controller_container__PMXA9') {
-                    posX = window.scrollX;
-                    posY = window.scrollY;
-                    document.querySelector('.button_button__GOl5m.toggle-playing-button_controlButton__aiuq3').click();
-    
-                    window.scroll(posX, posY);
-                }
-                singleClickFlag = false;
-            }
-
-            /* フルスクリーンボタンをクリック */
-            function doubleClick(e) {
-                if (e.target.classList[0] == 'controller_container__PMXA9') {
-                    document.querySelector('img[alt="全画面').click();
-                }
+        },
+        doubleClick: function(e) {
+            if (e.target.classList[0] == 'controller_container__PMXA9') {
+                document.querySelector('img[alt="全画面').click();
             }
         },
         getLiveFlag: function () {
@@ -177,9 +160,9 @@
                 footer = site.getFooter();
             }
 
-            canvas.addEventListener("click", site.canvasClick, e =>  {
-                passive: false
-            });
+            // canvas.addEventListener("click", site.canvasClick, e =>  {
+            //     passive: false
+            // });
 
             video.playbackRate = VIDEO_SPEED;
             showVideoSpeed();
@@ -203,6 +186,7 @@
 
                 videoSrc = site.getVideoSrc();
                 video.playbackRate = VIDEO_SPEED;
+                showVideoSpeed();
                 site.skipAd();
 
                 if (videoSrc != videoSrcOld) {

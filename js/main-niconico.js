@@ -31,37 +31,21 @@
                 return null;
             }
         },
-        /* 画面をクリック */
-        canvasClick: function () {
-            singleClickFlag = !singleClickFlag;
-            if(singleClickFlag){
-                clickTimerId = window.setTimeout(singleClick, 250);
-            }else{
-                window.clearTimeout(clickTimerId);
-                singleClickFlag = false;
-                doubleClick()
+        singleClick: function() {
+            posX = window.scrollX;
+            posY = window.scrollY;
+            if (document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton')) {
+                document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton').click();
+            } else {
+                document.querySelector('.ActionButton.ControllerButton.PlayerPauseButton').click();
             }
-
-            /* 再生停止ボタンをクリック */
-            function singleClick() {
-                posX = window.scrollX;
-                posY = window.scrollY;
-                if (document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton')) {
-                    document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton').click();
-                } else {
-                    document.querySelector('.ActionButton.ControllerButton.PlayerPauseButton').click();
-                }
-                window.scroll(posX, posY);
-                singleClickFlag = false;
-            }
-
-            /* フルスクリーンボタンをクリック */
-            function doubleClick() {
-                if (document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton')) {
-                    document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton').click();
-                } else {
-                    document.querySelector('.ActionButton.ControllerButton.DisableFullScreenButton').click();
-                }
+            window.scroll(posX, posY);
+        },
+        doubleClick: function() {
+            if (document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton')) {
+                document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton').click();
+            } else {
+                document.querySelector('.ActionButton.ControllerButton.DisableFullScreenButton').click();
             }
         },
         getLiveFlag: function () {
@@ -98,9 +82,9 @@
             let nextButton = document.querySelector('.ActionButton.ControllerButton.PlayerSkipNextButton');
             let continuousLabel = document.querySelector('.Toggle.is-checked.is-append')?.querySelector('.Toggle-checkbox')?.checked;
             if(!mainCanvas && supporterCanvas){
-                supporterCanvas.addEventListener("click", site.canvasClick, {
-                    passive: false
-                });
+                // supporterCanvas.addEventListener("click", site.canvasClick, {
+                //     passive: false
+                // });
                 clearInterval(interval);
                 core.initialize();
             }
@@ -110,16 +94,6 @@
                 core.initialize();
             }
         },
-        /* ブラックモード */
-        // setBlackMode: function () {
-        //     let gray = '#202020'
-        //     let mylistList = document.querySelectorAll('.MylistSideContainer-mylistList>*');
-        //     mylistList?.forEach(element => element.style.background=gray);
-        //     let seriesList = document.querySelectorAll('.VideoSideContainer-seriesList>*');
-        //     seriesList?.forEach(element => element.style.background=gray);
-        //     let seriesContainer = document.querySelectorAll('.NC-Link.NC-MediaObject-contents');
-        //     seriesContainer?.forEach(element => element.style.background= gray);
-        // }
     };
 
     /* 処理本体 */
@@ -161,7 +135,7 @@
                 setEvent();
             }
 
-            canvas.addEventListener("click", site.canvasClick);
+            //canvas.addEventListener("click", site.canvasClick);
 
             video.playbackRate = VIDEO_SPEED;
             showVideoSpeed();
@@ -184,6 +158,7 @@
 
                 videoSrc = site.getVideoSrc();
                 video.playbackRate = VIDEO_SPEED;
+                showVideoSpeed();
 
                 if (videoSrc != videoSrcOld) {
                     videoSrcOld = videoSrc;

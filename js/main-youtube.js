@@ -6,6 +6,9 @@
 
     /* サイト定義 */
     site = {
+        getCanvas: function () {
+            return document.querySelector('#ytd-player');
+        },
         getFooter: function () {
             let selecter = '.ytp-left-controls';
             // シアターモードの場合のプレイヤー
@@ -25,6 +28,12 @@
                 return player.querySelector(selecter);
             }
         },
+        singleClick: function() {
+            return null;
+        },
+        doubleClick: function() {
+            return null;
+        },
         getLiveFlag: function () {
             if (document.querySelector('.ytp-time-display.notranslate.ytp-live')) {
                 return true;
@@ -39,7 +48,6 @@
                 return null;
             }
         },
-
         /* ボタンを設置する */
         setButton: function () {
             removeBottun();
@@ -118,19 +126,20 @@
                     return;
                 }
 
-                let confirmButton = document.querySelector('#confirm-button');
-                if(confirmButton){
-                    confirmButton.click();
-                }
+                // let confirmButton = document.querySelector('#confirm-button');
+                // if(confirmButton){
+                //     confirmButton.click();
+                // }
                 videoSrc = site.getVideoSrc();
                 video.playbackRate = VIDEO_SPEED;
+                showVideoSpeed();
 
                 if (videoSrc != videoSrcOld) {
                     videoSrcOld = videoSrc;
                     clearInterval(interval);
                     core.initialize();
                 }
-            }, 1000);
+            }, 500);
         },
     };
     core.initialize();

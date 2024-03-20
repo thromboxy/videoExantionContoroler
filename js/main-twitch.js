@@ -8,6 +8,9 @@
     
     /* サイト定義 */
     site = {
+        getCanvas: function () {
+            return document.querySelector('div[data-a-target="player-overlay-click-handler"]');
+        },
         getFooter: function () {
             var length = document.querySelectorAll('.player-controls__left-control-group').length;
             return document.querySelectorAll('.player-controls__left-control-group')[0];
@@ -18,6 +21,12 @@
         getSeekBar: function () {
             var length = document.querySelectorAll('.seekbar-interaction-area').length;
             return document.querySelectorAll('.seekbar-interaction-area')[0];
+        },
+        singleClick: function() {
+            return null;
+        },
+        doubleClick: function() {
+            return null;
         },
         getLiveFlag: function () {
             if (!site.getSeekBar()) {
@@ -121,6 +130,7 @@
                     readCache();
                 }
                 video.playbackRate = VIDEO_SPEED;
+                showVideoSpeed();
                 if (videoSrc != videoSrcOld) {
                     videoSrcOld = videoSrc;
                     clearInterval(interval);

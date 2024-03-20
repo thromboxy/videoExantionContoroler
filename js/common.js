@@ -1,6 +1,7 @@
 "use strict";
 
 let VIDEO_SPEED;
+let TEMP_VIDEO_SPEED;
 let TIME_WIDTH;
 let TIME_WHEEL_WIDTH;
 let SPEED_WIDTH;
@@ -10,6 +11,7 @@ let INITIALIZE_TIMER;
 let NUM_KEY_FLAG;
 
 VIDEO_SPEED = 1.00;
+TEMP_VIDEO_SPEED = 1.00;
 TIME_WIDTH = 5;
 TIME_WHEEL_WIDTH = 1;
 SPEED_WIDTH = 0.05;
@@ -152,20 +154,25 @@ function setOnClick() {
     setHold(speedDownButton);
     setHold(speedUpButton);
 
+    setHoldCanvas( site.getCanvas());
+
     /* マウスホールドイベントを登録する */
     function setHold(target) {
         let pushing_flag = 0;
         let timerId;
 
         target.addEventListener('mousedown', e => {
+            e.stopPropagation();
             pushing_flag = 1;
             timerId = window.setTimeout(mouseHold, 500, e.currentTarget);
         });
         target.addEventListener('mouseup', e => {
+            e.stopPropagation();
             pushing_flag = 0;
             window.clearTimeout(timerId);
         });
         target.addEventListener('mouseout', e => {
+            e.stopPropagation();
             pushing_flag = 0;
             window.clearTimeout(timerId);
         });
@@ -173,6 +180,63 @@ function setOnClick() {
             if (pushing_flag) {
                 button.onclick();
                 timerId = window.setTimeout(mouseHold, 100, button);
+            }
+        }
+    }
+
+    /* マウスホールドキャンバスイベントを登録する */
+    function setHoldCanvas(target) {
+        let pushing_flag = 0;
+        let holding_flag = 0;
+        let singleClickFlag = false;
+        let holdTimerId;
+        let clickTimerId;
+
+        target.addEventListener('mousedown', e => {
+            TEMP_VIDEO_SPEED = VIDEO_SPEED;
+            pushing_flag = 1;
+            holdTimerId = window.setTimeout(mouseHold, 500, e.currentTarget);
+        });
+        target.addEventListener('mouseup', e => {
+            singleClickFlag = !singleClickFlag;
+            if(singleClickFlag && !holding_flag){
+                singleClickFlag = true;
+                clickTimerId = window.setTimeout(singleClick, 250 , e);
+            }else if(!singleClickFlag && !holding_flag){
+                window.clearTimeout(clickTimerId);
+                singleClickFlag = false;
+                site.doubleClick(e);
+            }else if(holding_flag){
+                singleClickFlag = false;
+            }
+            pushing_flag = 0;
+            holding_flag = 0;
+            VIDEO_SPEED = TEMP_VIDEO_SPEED;
+            video.playbackRate = VIDEO_SPEED;
+            window.clearTimeout(holdTimerId);
+        });
+        target.addEventListener('mouseout', e => {
+            if (pushing_flag) {
+                VIDEO_SPEED = TEMP_VIDEO_SPEED;
+                video.playbackRate = VIDEO_SPEED;
+            }
+            pushing_flag = 0;
+            holding_flag = 0;
+            window.clearTimeout(clickTimerId);
+            window.clearTimeout(holdTimerId);
+        });
+        function singleClick(e) {
+            singleClickFlag = false;
+            site.singleClick(e);
+        }
+        function mouseHold(video) {
+            if (pushing_flag) {
+                holding_flag = 1;
+                singleClickFlag = false;
+                VIDEO_SPEED = TEMP_VIDEO_SPEED * 2;
+                video.playbackRate = TEMP_VIDEO_SPEED;
+                window.clearTimeout(clickTimerId);
+                holdTimerId = window.setTimeout(mouseHold, 100, video);
             }
         }
     }

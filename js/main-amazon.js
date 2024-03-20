@@ -11,6 +11,9 @@
 
     /* サイト定義 */
     site = {
+        getCanvas: function () {
+            return document.querySelector('.ffszj3z.f8hspre.f1icw8u');
+        },
         getFooter: function () {
             return document.querySelector('.fage5o5.f1mic5r1');
         },
@@ -26,6 +29,12 @@
             } else {
                 return null;
             }
+        },
+        singleClick: function() {
+            return null;
+        },
+        doubleClick: function() {
+            return null;
         },
         getLiveFlag: function () {
             return false;
@@ -145,6 +154,7 @@
 
                 videoSrc = site.getVideoSrc();
                 video.playbackRate = VIDEO_SPEED;
+                showVideoSpeed();
                 site.skipAd();
 
 
@@ -153,7 +163,7 @@
                     clearInterval(interval);
                     core.initialize();
                 }
-            }, 1000);
+            }, 500);
         },
     };
     core.initialize();
