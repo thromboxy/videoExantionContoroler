@@ -87,6 +87,7 @@
                 // });
                 clearInterval(interval);
                 core.initialize();
+                setOnClick();
             }
             if (!mainCanvas && continuousLabel) {
                 nextButton.click();
