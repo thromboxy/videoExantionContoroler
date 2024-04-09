@@ -222,7 +222,7 @@ function setOnClick() {
             }
             pushing_flag = 0;
             holding_flag = 0;
-            window.clearTimeout(clickTimerId);
+            singleClickFlag = false;
             window.clearTimeout(holdTimerId);
         });
         function singleClick(e) {

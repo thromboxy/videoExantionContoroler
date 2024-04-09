@@ -7,7 +7,7 @@
     /* サイト定義 */
     site = {
         getCanvas: function () {
-            return document.querySelector('#ytd-player');
+            return document.querySelector('.html5-video-container');
         },
         getFooter: function () {
             let selecter = '.ytp-left-controls';
