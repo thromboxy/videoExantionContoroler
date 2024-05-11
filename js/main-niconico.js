@@ -2,9 +2,14 @@
 
 (function () {
 
+    let RESET_CANVAS_FLAG;
+    RESET_CANVAS_FLAG = false;
+
     CACHE_NAME = 'NiconicoVideoSpeed';
 
     NUM_KEY_FLAG = true;
+
+
 
     // 広告非表示等
     sheet.insertRule('.ActionButton.PlaybackRateButton, .SideFollowAdContainer, #RectangleAd, .NicoSpotAdContainer, .PreVideoStartPremiumLinkOnEconomyTimeContainer, .MainContainer-marquee, .PlayerOverlayBottomMessage.PreVideoStartPremiumLinkContainer { display:none; style:"";}', 1);
@@ -31,7 +36,14 @@
                 return null;
             }
         },
-        singleClick: function() {
+        getSupporterViewVisibility: function () {
+            let style = document.querySelector('div[class="SupporterView"]').getAttribute('style');
+            if (style == 'visibility: visible;') {
+                return true;
+            }
+            return false;
+        },
+        singleClick: function () {
             posX = window.scrollX;
             posY = window.scrollY;
             if (document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton')) {
@@ -41,7 +53,7 @@
             }
             window.scroll(posX, posY);
         },
-        doubleClick: function() {
+        doubleClick: function () {
             if (document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton')) {
                 document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton').click();
             } else {
@@ -77,19 +89,9 @@
         },
         /* 提供画面ｽｷｯﾌﾟ */
         clickNextButton: function () {
-            let mainCanvas = site.getCanvas();
-            let supporterCanvas = document.querySelector('#SupporterView-canvas');
             let nextButton = document.querySelector('.ActionButton.ControllerButton.PlayerSkipNextButton');
             let continuousLabel = document.querySelector('.Toggle.is-checked.is-append')?.querySelector('.Toggle-checkbox')?.checked;
-            if(!mainCanvas && supporterCanvas){
-                // supporterCanvas.addEventListener("click", site.canvasClick, {
-                //     passive: false
-                // });
-                clearInterval(interval);
-                core.initialize();
-                setOnClick();
-            }
-            if (!mainCanvas && continuousLabel) {
+            if (continuousLabel) {
                 nextButton.click();
                 clearInterval(interval);
                 core.initialize();
@@ -136,6 +138,9 @@
                 setEvent();
             }
 
+            if (RESET_CANVAS_FLAG) {
+                setHoldCanvas(site.getCanvas());
+            }
             //canvas.addEventListener("click", site.canvasClick);
 
             video.playbackRate = VIDEO_SPEED;
@@ -161,13 +166,18 @@
                 video.playbackRate = VIDEO_SPEED;
                 showVideoSpeed();
 
+                if (site.getSupporterViewVisibility()) {
+                    RESET_CANVAS_FLAG = true;
+                    site.clickNextButton();
+                }
+
                 if (videoSrc != videoSrcOld) {
                     videoSrcOld = videoSrc;
                     clearInterval(interval);
                     core.initialize();
                 }
                 saveResumeCache();
-                site.clickNextButton();
+
             }, 100);
         },
     };

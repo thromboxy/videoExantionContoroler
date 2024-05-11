@@ -99,11 +99,11 @@ function saveCache() {
 
 /* レジュームキャッシュセーブ */
 function saveResumeCache() {
-    if(resumeTime){
+    if (resumeTime) {
         let timeDiff = Math.abs(video.currentTime - resumeTime);
-        if(!timeDiff || timeDiff < 5) return;
+        if (!timeDiff || timeDiff < 5) return;
     }
-    
+
     if (!RESUME_CACHE_NAME || video.paused) return;
     if (!site.getLiveFlag()) {
         if (video.currentTime < 120 || video.currentTime > video.duration - 120) {
@@ -154,7 +154,7 @@ function setOnClick() {
     setHold(speedDownButton);
     setHold(speedUpButton);
 
-    setHoldCanvas( site.getCanvas());
+    setHoldCanvas(site.getCanvas());
 
     /* マウスホールドイベントを登録する */
     function setHold(target) {
@@ -183,61 +183,61 @@ function setOnClick() {
             }
         }
     }
+}
 
-    /* マウスホールドキャンバスイベントを登録する */
-    function setHoldCanvas(target) {
-        let pushing_flag = 0;
-        let holding_flag = 0;
-        let singleClickFlag = false;
-        let holdTimerId;
-        let clickTimerId;
+/* マウスホールドキャンバスイベントを登録する */
+function setHoldCanvas(target) {
+    let pushing_flag = 0;
+    let holding_flag = 0;
+    let singleClickFlag = false;
+    let holdTimerId;
+    let clickTimerId;
 
-        target.addEventListener('mousedown', e => {
-            TEMP_VIDEO_SPEED = VIDEO_SPEED;
-            pushing_flag = 1;
-            holdTimerId = window.setTimeout(mouseHold, 500, e.currentTarget);
-        });
-        target.addEventListener('mouseup', e => {
-            singleClickFlag = !singleClickFlag;
-            if(singleClickFlag && !holding_flag){
-                singleClickFlag = true;
-                clickTimerId = window.setTimeout(singleClick, 250 , e);
-            }else if(!singleClickFlag && !holding_flag){
-                window.clearTimeout(clickTimerId);
-                singleClickFlag = false;
-                site.doubleClick(e);
-            }else if(holding_flag){
-                singleClickFlag = false;
-            }
-            pushing_flag = 0;
-            holding_flag = 0;
+    target.addEventListener('mousedown', e => {
+        TEMP_VIDEO_SPEED = VIDEO_SPEED;
+        pushing_flag = 1;
+        holdTimerId = window.setTimeout(mouseHold, 250, e.currentTarget);
+    });
+    target.addEventListener('mouseup', e => {
+        singleClickFlag = !singleClickFlag;
+        if (singleClickFlag && !holding_flag) {
+            singleClickFlag = true;
+            clickTimerId = window.setTimeout(singleClick, 250, e);
+        } else if (!singleClickFlag && !holding_flag) {
+            window.clearTimeout(clickTimerId);
+            singleClickFlag = false;
+            site.doubleClick(e);
+        } else if (holding_flag) {
+            singleClickFlag = false;
+        }
+        pushing_flag = 0;
+        holding_flag = 0;
+        VIDEO_SPEED = TEMP_VIDEO_SPEED;
+        video.playbackRate = VIDEO_SPEED;
+        window.clearTimeout(holdTimerId);
+    });
+    target.addEventListener('mouseout', e => {
+        if (pushing_flag) {
             VIDEO_SPEED = TEMP_VIDEO_SPEED;
             video.playbackRate = VIDEO_SPEED;
-            window.clearTimeout(holdTimerId);
-        });
-        target.addEventListener('mouseout', e => {
-            if (pushing_flag) {
-                VIDEO_SPEED = TEMP_VIDEO_SPEED;
-                video.playbackRate = VIDEO_SPEED;
-            }
-            pushing_flag = 0;
-            holding_flag = 0;
-            singleClickFlag = false;
-            window.clearTimeout(holdTimerId);
-        });
-        function singleClick(e) {
-            singleClickFlag = false;
-            site.singleClick(e);
         }
-        function mouseHold(video) {
-            if (pushing_flag) {
-                holding_flag = 1;
-                singleClickFlag = false;
-                VIDEO_SPEED = TEMP_VIDEO_SPEED * 2;
-                video.playbackRate = TEMP_VIDEO_SPEED;
-                window.clearTimeout(clickTimerId);
-                holdTimerId = window.setTimeout(mouseHold, 100, video);
-            }
+        pushing_flag = 0;
+        holding_flag = 0;
+        singleClickFlag = false;
+        window.clearTimeout(holdTimerId);
+    });
+    function singleClick(e) {
+        singleClickFlag = false;
+        site.singleClick(e);
+    }
+    function mouseHold(video) {
+        if (pushing_flag) {
+            holding_flag = 1;
+            singleClickFlag = false;
+            VIDEO_SPEED = TEMP_VIDEO_SPEED * 2;
+            video.playbackRate = TEMP_VIDEO_SPEED;
+            window.clearTimeout(clickTimerId);
+            holdTimerId = window.setTimeout(mouseHold, 100, video);
         }
     }
 }
