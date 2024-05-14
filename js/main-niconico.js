@@ -136,10 +136,9 @@
                 site.setButton();
                 setOnClick();
                 setEvent();
-            }
-
-            if (RESET_CANVAS_FLAG) {
+            }else if (RESET_CANVAS_FLAG) {
                 setHoldCanvas(site.getCanvas());
+                RESET_CANVAS_FLAG = false;
             }
             //canvas.addEventListener("click", site.canvasClick);
 
