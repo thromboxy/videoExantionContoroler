@@ -4,6 +4,8 @@
 
     let RESET_CANVAS_FLAG;
     RESET_CANVAS_FLAG = false;
+    let NEED_RESUME;
+    NEED_RESUME = true;
 
     CACHE_NAME = 'NiconicoVideoSpeed';
 
@@ -18,16 +20,28 @@
     /* サイト定義 */
     site = {
         getCanvas: function () {
-            return document.querySelector('.VideoSymbolContainer-canvas');
+            return document.querySelector('div[data-styling-id=":r2:"]');
         },
         getFooter: function () {
-            return document.querySelector('.ControllerContainer-area');
+            var parent = document.querySelector('div[data-styling-id=":r4:"]');
+            if(parent){
+                return parent.childNodes[0].childNodes[1].childNodes[3];
+            }else if(document.querySelector('div[data-styling-id=":r2:"]')){
+                return document.querySelector('div[data-styling-id=":r2:"]').childNodes[0].childNodes[0].childNodes[1].childNodes[1].childNodes[3];
+            }
+            return null;
         },
         getVideo: function () {
             return document.querySelector('video[src]');
         },
         getSeekBar: function () {
-            return document.querySelector('.SeekBarContainer');
+            var parent = document.querySelector('div[data-styling-id=":r4:"]');
+            if(parent){
+                return parent.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[1];
+            }else if(document.querySelector('div[data-styling-id=":r2:"]')){
+                return document.querySelector('div[data-styling-id=":r2:"]').childNodes[0].childNodes[0].childNodes[1].childNodes[1].childNodes[3];
+            }
+            return null;
         },
         getVideoSrc: function () {
             if (video) {
@@ -44,20 +58,20 @@
             return false;
         },
         singleClick: function () {
-            posX = window.scrollX;
-            posY = window.scrollY;
-            if (document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton')) {
-                document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton').click();
-            } else {
-                document.querySelector('.ActionButton.ControllerButton.PlayerPauseButton').click();
-            }
-            window.scroll(posX, posY);
+            // posX = window.scrollX;
+            // posY = window.scrollY;
+            // if (document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton')) {
+            //     document.querySelector('.ActionButton.ControllerButton.PlayerPlayButton').click();
+            // } else {
+            //     document.querySelector('.ActionButton.ControllerButton.PlayerPauseButton').click();
+            // }
+            // window.scroll(posX, posY);
         },
         doubleClick: function () {
-            if (document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton')) {
-                document.querySelector('.ActionButton.ControllerButton.EnableFullScreenButton').click();
+            if (document.querySelector('button[aria-label="フルスクリーン表示"]')) {
+                document.querySelector('button[aria-label="フルスクリーン表示"]').click();
             } else {
-                document.querySelector('.ActionButton.ControllerButton.DisableFullScreenButton').click();
+                document.querySelector('button[aria-label="フルスクリーンを解除"]').click();
             }
         },
         getLiveFlag: function () {
@@ -65,18 +79,17 @@
         },
         /* ボタンを設置する */
         setButton: function () {
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="ControllerButton-inner" style="font-size:120%;margin-left: 6px;">');
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="ControllerButton-inner" style="font-size:120%;">');
+            footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="cursor_pointer" style="font-size:120%;margin-left: 6px;color: white;">');
+            footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="cursor_pointer" style="font-size:120%;color: white;">');
 
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="ControllerButton-inner" style="font-size:130%;margin-left: 6px;">');
-            footer.insertAdjacentHTML('beforeend', '<span class="ControllerButton-inner" id="' + SPEED_SPAN_ID + '" style="font-size:110%;"></span>');
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="ControllerButton-inner" style="font-size:130%;">');
+            footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="cursor_pointer" style="font-size:120%;margin-left: 6px;color: white;">');
+            footer.insertAdjacentHTML('beforebegin', '<span class="ControllerButton-inner" id="' + SPEED_SPAN_ID + '" style="font-size:110%;"></span>');
+            footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="cursor_pointer" style="font-size:120%;color: white;">');
 
         },
         /* 音量バーを設定する */
         setVolumeBar: function (volume) {
-            document.querySelector('.ProgressBar-inner.VolumeBar-progress').style.cssText = 'transform: scaleX(' + volume.toFixed(4) + ');';
-            document.querySelector('.Tooltip-inner').innerHTML = '音量 : ' + (volume * 100).toFixed(0);
+            // document.querySelector('div[aria-label="volume"]').style.cssText = 'transform: scaleX(' + volume.toFixed(4) + ');';
         },
         /* レジュームキャッシュ名設定 */
         setResumeCacheName: function () {
@@ -103,7 +116,7 @@
     core = {
         /* 初期化 */
         initialize: function () {
-            //console.log(SCRIPT_NAME, 'initialize...');
+            console.log(SCRIPT_NAME, 'initialize...');
 
             /* 主要要素が取得できるまで読み込み待ち */
             video = null;
@@ -116,7 +129,7 @@
 
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
-                    //　console.log(SCRIPT_NAME, 'initialize timeout...');
+                    console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
                     core.initialize();
                 }, INITIALIZE_TIMER);
                 return;
@@ -124,13 +137,18 @@
 
             resumeTime = 0;
 
-            /* キャッシュ読み込み */
-            readCache();
+            if(NEED_RESUME){
+                /* キャッシュ読み込み */
+                readCache();
+                site.setResumeCacheName();
+                readResumeCache();
+            }else{
+                NEED_RESUME = true;
+            }
 
             videoSrc = site.getVideoSrc();
 
-            site.setResumeCacheName();
-            readResumeCache();
+
 
             if (!document.querySelector('#' + TIME_BACK_ID)) {
                 site.setButton();
@@ -150,34 +168,43 @@
 
         /* FPSタイマー駆動 */
         setInterval: function () {
-            //console.log(SCRIPT_NAME, 'setInterval...');
+            console.log(SCRIPT_NAME, 'setInterval...');
             interval = window.setInterval(function () {
-                //console.log(SCRIPT_NAME, 'interval...');
+                console.log(SCRIPT_NAME, 'interval...');
                 video = site.getVideo();
 
                 if (!video) {
+                    NEED_RESUME = true;
+                    clearInterval(interval);
+                    core.initialize();
+                    return;
+                }else if(!document.querySelector('#' + SPEED_SPAN_ID)) {
+                    NEED_RESUME = false;
                     clearInterval(interval);
                     core.initialize();
                     return;
                 }
 
+                
+
                 videoSrc = site.getVideoSrc();
                 video.playbackRate = VIDEO_SPEED;
                 showVideoSpeed();
 
-                if (site.getSupporterViewVisibility()) {
-                    RESET_CANVAS_FLAG = true;
-                    site.clickNextButton();
-                }
+                // if (site.getSupporterViewVisibility()) {
+                //     RESET_CANVAS_FLAG = true;
+                //     site.clickNextButton();
+                // }
 
                 if (videoSrc != videoSrcOld) {
+                    NEED_RESUME = true;
                     videoSrcOld = videoSrc;
                     clearInterval(interval);
                     core.initialize();
                 }
                 saveResumeCache();
 
-            }, 100);
+            }, 500);
         },
     };
     core.initialize();
