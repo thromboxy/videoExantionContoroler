@@ -67,12 +67,14 @@
             // }
             // window.scroll(posX, posY);
         },
-        doubleClick: function () {
-            if (document.querySelector('button[aria-label="フルスクリーン表示"]')) {
-                document.querySelector('button[aria-label="フルスクリーン表示"]').click();
-            } else {
-                document.querySelector('button[aria-label="フルスクリーンを解除"]').click();
-            }
+        doubleClick: function (e) {
+            if (!e.target.getAttribute('role') && e.target.tagName == 'DIV'){
+                if (document.querySelector('button[aria-label="フルスクリーン表示"]')) {
+                    document.querySelector('button[aria-label="フルスクリーン表示"]').click();
+                } else {
+                    document.querySelector('button[aria-label="フルスクリーンを解除"]').click();
+                }
+            }   
         },
         getLiveFlag: function () {
             return false;
@@ -116,7 +118,7 @@
     core = {
         /* 初期化 */
         initialize: function () {
-            console.log(SCRIPT_NAME, 'initialize...');
+            // console.log(SCRIPT_NAME, 'initialize...');
 
             /* 主要要素が取得できるまで読み込み待ち */
             video = null;
@@ -129,7 +131,7 @@
 
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
-                    console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
+                    // console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
                     core.initialize();
                 }, INITIALIZE_TIMER);
                 return;
@@ -168,9 +170,9 @@
 
         /* FPSタイマー駆動 */
         setInterval: function () {
-            console.log(SCRIPT_NAME, 'setInterval...');
+            // console.log(SCRIPT_NAME, 'setInterval...');
             interval = window.setInterval(function () {
-                console.log(SCRIPT_NAME, 'interval...');
+                // console.log(SCRIPT_NAME, 'interval...');
                 video = site.getVideo();
 
                 if (!video) {
