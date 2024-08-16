@@ -47,5 +47,5 @@
    "manifest_version": 3,
    "name": "Video Expansion Controller",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.6.5.1"
+   "version": "1.6.5.2"
 }

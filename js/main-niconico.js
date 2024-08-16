@@ -25,9 +25,9 @@
         getFooter: function () {
             var parent = document.querySelector('div[data-styling-id=":r4:"]');
             if(parent){
-                return parent.childNodes[0].childNodes[1].childNodes[3];
+                return parent.childNodes[0].childNodes[1].childNodes[5];
             }else if(document.querySelector('div[data-styling-id=":r2:"]')){
-                return document.querySelector('div[data-styling-id=":r2:"]').childNodes[0].childNodes[0].childNodes[1].childNodes[1].childNodes[3];
+                return document.querySelector('div[data-styling-id=":r2:"]').childNodes[0].childNodes[0].childNodes[1].childNodes[1].childNodes[5];
             }
             return null;
         },
@@ -69,10 +69,10 @@
         },
         doubleClick: function (e) {
             if (!e.target.getAttribute('role') && e.target.tagName == 'DIV'){
-                if (document.querySelector('button[aria-label="フルスクリーン表示"]')) {
-                    document.querySelector('button[aria-label="フルスクリーン表示"]').click();
+                if (document.querySelector('button[aria-label="全画面表示する"]')) {
+                    document.querySelector('button[aria-label="全画面表示する"]').click();
                 } else {
-                    document.querySelector('button[aria-label="フルスクリーンを解除"]').click();
+                    document.querySelector('button[aria-label="全画面表示を終了"]').click();
                 }
             }   
         },
