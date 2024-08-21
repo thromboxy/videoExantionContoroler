@@ -206,7 +206,7 @@
                 }
                 saveResumeCache();
 
-            }, 500);
+            }, 100);
         },
     };
     core.initialize();
