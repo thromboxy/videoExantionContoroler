@@ -12,10 +12,10 @@
     /* サイト定義 */
     site = {
         getCanvas: function () {
-            return document.querySelector('.controller_container__PMXA9');
+            return document.querySelector('.controller_keyAction__xjQWJ');
         },
         getFooter: function () {
-            return document.querySelector('.controller_hidable__DnlQd');
+            return document.querySelector('.controller_hidable__180He');
         },
         // ホイールイベント（音量)用にフッターを更新する
         getWheelEventFooter: function () {
@@ -31,7 +31,7 @@
             return document.querySelector('video[title="Advertisement"][src*="https://"]')　// ?? document.querySelector('lima-video[src*=".mp4"]');
         },
         getSeekBar: function () {
-            return document.querySelector('.progress_container__C3IB_');
+            return document.querySelector('.progress_container__7cAIm');
         },
         getVideoSrc: function () {
             if (video) {
@@ -138,7 +138,7 @@
 
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
-                    //console.log(SCRIPT_NAME, 'initialize timeout...');
+                    console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
                     site.autoPlayVideo();
                     core.initialize();
                 }, INITIALIZE_TIMER);
