@@ -20,14 +20,14 @@
     /* サイト定義 */
     site = {
         getCanvas: function () {
-            return document.querySelector('div[data-styling-id=":r2:"]');
+            return document.querySelector('div[data-styling-id="«r2»"]');
         },
         getFooter: function () {
-            var parent = document.querySelector('div[data-styling-id=":r4:"]');
+            var parent = document.querySelector('div[data-styling-id="«r4»"]');
             if(parent){
-                return parent.childNodes[0].childNodes[1].childNodes[5];
-            }else if(document.querySelector('div[data-styling-id=":r2:"]')){
-                return document.querySelector('div[data-styling-id=":r2:"]').childNodes[0].childNodes[0].childNodes[1].childNodes[1].childNodes[5];
+                return parent.childNodes[0].childNodes[1].childNodes[4];
+            }else if(document.querySelector('div[data-styling-id="«r2»"]')){
+                return document.querySelector('div[data-styling-id="«r2»"]').childNodes[0].childNodes[0].childNodes[1].childNodes[1].childNodes[4];
             }
             return null;
         },
@@ -35,11 +35,11 @@
             return document.querySelector('video[src]');
         },
         getSeekBar: function () {
-            var parent = document.querySelector('div[data-styling-id=":r4:"]');
+            var parent = document.querySelector('div[data-styling-id="«r4»"]');
             if(parent){
-                return parent.childNodes[0].childNodes[0].childNodes[0].childNodes[0].childNodes[1];
-            }else if(document.querySelector('div[data-styling-id=":r2:"]')){
-                return document.querySelector('div[data-styling-id=":r2:"]').childNodes[0].childNodes[0].childNodes[1].childNodes[1].childNodes[3];
+                return parent.childNodes[0].childNodes[0].childNodes[0];
+            }else if(document.querySelector('div[data-styling-id="«r2»"]')){
+                return document.querySelector('div[data-styling-id="«r2»"]').childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[0];
             }
             return null;
         },
@@ -131,7 +131,7 @@
 
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
-                    // console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
+                    console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
                     core.initialize();
                 }, INITIALIZE_TIMER);
                 return;
