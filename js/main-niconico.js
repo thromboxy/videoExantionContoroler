@@ -131,7 +131,7 @@
 
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
-                    console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
+                    //console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
                     core.initialize();
                 }, INITIALIZE_TIMER);
                 return;

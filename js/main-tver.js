@@ -12,14 +12,14 @@
     /* サイト定義 */
     site = {
         getCanvas: function () {
-            return document.querySelector('.controller_keyAction__xjQWJ');
+            return document.querySelector('.controller_container__3ivc9');
         },
         getFooter: function () {
             return document.querySelector('.controller_hidable__180He');
         },
         // ホイールイベント（音量)用にフッターを更新する
         getWheelEventFooter: function () {
-            return document.querySelector('.controller_buttons__t_OZ5');
+            return document.querySelector('div[class="volume_slider__Lib_j"]');
         },
         getVideo: function () {
             // CMが存在すればCMを返却
@@ -31,7 +31,7 @@
             return document.querySelector('video[title="Advertisement"][src*="https://"]')　// ?? document.querySelector('lima-video[src*=".mp4"]');
         },
         getSeekBar: function () {
-            return document.querySelector('.progress_container__7cAIm');
+            return document.querySelector('div[class="SeekBar_container__mcvNv"]');
         },
         getVideoSrc: function () {
             if (video) {
@@ -48,16 +48,16 @@
             }
         },
         singleClick: function(e) {
-            if (e.target.classList[0] == 'controller_container__PMXA9') {
+            if (e.target.classList[0] == 'controller_container__3ivc9') {
                 posX = window.scrollX;
                 posY = window.scrollY;
-                document.querySelector('.button_button__GOl5m.toggle-playing-button_controlButton__aiuq3').click();
+                document.querySelector('button[class*="toggle-playing-button_controlButton__YRuPQ"]').click();
 
                 window.scroll(posX, posY);
             }
         },
         doubleClick: function(e) {
-            if (e.target.classList[0] == 'controller_container__PMXA9') {
+            if (e.target.classList[0] == 'controller_container__3ivc9') {
                 document.querySelector('img[alt="全画面').click();
             }
         },
@@ -66,7 +66,7 @@
         },
         /* ボタンを設置する */
         setButton: function () {
-            footer.insertAdjacentHTML('afterend', '<label for="' + SKIP_CHECKBOX_ID + '" id="' + SKIP_CHECKBOX_LABEL + '" title="一部CMはｽｷｯﾌﾟできません" style="font-size: 13px;"><input type="checkbox" id="' + SKIP_CHECKBOX_ID + '" style="vertical-align: middle; margin-right: 4px;">CMｽｷｯﾌﾟ</label>');
+            //footer.insertAdjacentHTML('afterend', '<label for="' + SKIP_CHECKBOX_ID + '" id="' + SKIP_CHECKBOX_LABEL + '" title="一部CMはｽｷｯﾌﾟできません" style="font-size: 13px;"><input type="checkbox" id="' + SKIP_CHECKBOX_ID + '" style="vertical-align: middle; margin-right: 4px;">CMｽｷｯﾌﾟ</label>');
             footer.insertAdjacentHTML('afterend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" style="font-size:25px;margin-left: 2px;margin-right: 12px;padding-right:5px;padding-left:2px;">');
             footer.insertAdjacentHTML('afterend', '<span class="f15586js" id="' + SPEED_SPAN_ID + '" style="font-size: 15px;margin-left: 3px;padding-right:10px;padding-left:10px;"></span>');
             footer.insertAdjacentHTML('afterend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<" style="font-size:25px;margin-left: 12px;padding-left:10px;">');
@@ -78,21 +78,21 @@
 
         /* 広告ｽｷｯﾌﾟ用ボタン設定*/
         setSkipButton: function () {
-            // 広告ｽｷｯﾌﾟ設定
-            let AdSkipButton = document.querySelector('#' + SKIP_CHECKBOX_ID);
-            let skipFlag = 'false';
-            if (localStorage.getItem(AD_SKIP_CACHE_NAME)) {
-                skipFlag = localStorage.getItem(AD_SKIP_CACHE_NAME);
-            } else {
-                localStorage.setItem(AD_SKIP_CACHE_NAME, false)
-            }
-            AdSkipButton.checked = JSON.parse(skipFlag.toLowerCase());
+            // // 広告ｽｷｯﾌﾟ設定
+            // let AdSkipButton = document.querySelector('#' + SKIP_CHECKBOX_ID);
+            // let skipFlag = 'false';
+            // if (localStorage.getItem(AD_SKIP_CACHE_NAME)) {
+            //     skipFlag = localStorage.getItem(AD_SKIP_CACHE_NAME);
+            // } else {
+            //     localStorage.setItem(AD_SKIP_CACHE_NAME, false)
+            // }
+            // AdSkipButton.checked = JSON.parse(skipFlag.toLowerCase());
 
-            // ｽｷｯﾌﾟフラグが更新された時の動作
-            AdSkipButton.addEventListener('change', function () {
-                let skipFlag = document.querySelector('#' + SKIP_CHECKBOX_ID).checked;
-                localStorage.setItem(AD_SKIP_CACHE_NAME, skipFlag);
-            }, false);
+            // // ｽｷｯﾌﾟフラグが更新された時の動作
+            // AdSkipButton.addEventListener('change', function () {
+            //     let skipFlag = document.querySelector('#' + SKIP_CHECKBOX_ID).checked;
+            //     localStorage.setItem(AD_SKIP_CACHE_NAME, skipFlag);
+            // }, false);
         },
 
         /* 広告ｽｷｯﾌﾟ */
@@ -138,7 +138,7 @@
 
             if (!footer || !video || !seekBar || !canvas) {
                 window.setTimeout(function () {
-                    console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
+                    //console.log(SCRIPT_NAME, 'initialize timeout...', footer, video, seekBar, canvas);
                     site.autoPlayVideo();
                     core.initialize();
                 }, INITIALIZE_TIMER);
@@ -152,7 +152,7 @@
 
             if (!document.querySelector('#' + TIME_BACK_ID)) {
                 site.setButton();
-                site.setSkipButton();
+                //site.setSkipButton();
                 setOnClick();
                 // イベントセット用にフッターを一時的に上書き
                 footer = site.getWheelEventFooter();
