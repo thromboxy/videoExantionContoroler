@@ -4,21 +4,6 @@
 
     CACHE_NAME = 'YoutubeVideoSpeed';
 
-    sheet.insertRule('.ytp-time-wrappe {'
-        + 'height: 60%;'
-        + 'margin-top: 0.9%;'
-        + 'border-radius: 28px;'
-        + 'text-align: center;'
-        + 'width: auto;'
-        + 'line-height: normal;'
-        + 'padding: 0 16px;'
-        // + '-webkit-backdrop-filter: blur(16px);'
-        + 'backdrop-filter: blur(16px);'
-        + 'background: var(--yt-spec-static-overlay-additive-background,rgba(40,40,40,.6));'
-         , 1);
-
-
-
     /* サイト定義 */
     site = {
         getCanvas: function () {
@@ -66,21 +51,13 @@
         /* ボタンを設置する */
         setButton: function () {
             removeBottun();
-            footer.insertAdjacentHTML('beforeend', '<div class="ytp-time-wrappe notranslate">'
-                +'<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;">'
-                +'<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;">'
-                +'<input type="button" id="' + SPEED_DOWN_ID + '" value="">'
-                +'<span class="ytp-button" id="' + SPEED_SPAN_ID + '" style="font-size:130%;margin-top:6.5%;"></span>'
-                +'<input type="button" id="' + SPEED_UP_ID + '" value="">'
-                +'</div>'
-            );
-            // footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;margin-left: 10px;padding-right:15px;">');
-            // footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;margin-left: 10px;padding-right:15px;">');
+            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;margin-left: 10px;padding-right:15px;">');
+            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;margin-left: 10px;padding-right:15px;">');
 
-            // footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:220%;margin-left: 14px;width:22px">');
-            // footer.insertAdjacentHTML('beforeend', '<span class="ytp-time-display" id="' + SPEED_SPAN_ID + '" style="font-size:130%;margin-left: 5px;padding-right:10px;padding-left:0px;"></span>');
-            // footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:220%;padding-right:10px;">');
-            // footer.insertAdjacentHTML('beforeend', '</div>');
+            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:220%;margin-left: 14px;width:22px">');
+            footer.insertAdjacentHTML('beforeend', '<span class="ytp-time-display" id="' + SPEED_SPAN_ID + '" style="font-size:130%;margin-left: 5px;padding-right:10px;padding-left:0px;"></span>');
+            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:220%;padding-right:10px;">');
+
         },
         /* 音量バーを設定する */
         setVolumeBar: function (volume) {

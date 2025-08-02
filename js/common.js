@@ -192,8 +192,10 @@ function setHoldCanvas(target) {
     let singleClickFlag = false;
     let holdTimerId;
     let clickTimerId;
+    let videoPausedFlag;
 
     target.addEventListener('mousedown', e => {
+        videoPausedFlag = undefined;
         TEMP_VIDEO_SPEED = VIDEO_SPEED;
         pushing_flag = 1;
         holdTimerId = window.setTimeout(mouseHold, 250, e.currentTarget);
@@ -214,6 +216,7 @@ function setHoldCanvas(target) {
         holding_flag = 0;
         VIDEO_SPEED = TEMP_VIDEO_SPEED;
         video.playbackRate = VIDEO_SPEED;
+        window.setTimeout(ChangeVideoPaused, 25, site.getVideo());
         window.clearTimeout(holdTimerId);
     });
     target.addEventListener('mouseout', e => {
@@ -233,12 +236,17 @@ function setHoldCanvas(target) {
     function mouseHold(video) {
         if (pushing_flag) {
             holding_flag = 1;
+            videoPausedFlag = site.getVideo().paused;
             singleClickFlag = false;
             VIDEO_SPEED = TEMP_VIDEO_SPEED * 2;
             video.playbackRate = TEMP_VIDEO_SPEED;
             window.clearTimeout(clickTimerId);
             holdTimerId = window.setTimeout(mouseHold, 100, video);
         }
+    }
+    function ChangeVideoPaused(video) {
+        if(videoPausedFlag === undefined) return;
+        videoPausedFlag ? video.pause() : video.play();
     }
 }
 

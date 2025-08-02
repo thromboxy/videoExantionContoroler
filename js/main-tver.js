@@ -12,10 +12,10 @@
     /* サイト定義 */
     site = {
         getCanvas: function () {
-            return document.querySelector('.controller_container__3ivc9');
+            return document.querySelector('[class*="Controller_container__"]');
         },
         getFooter: function () {
-            return document.querySelector('.controller_hidable__180He');
+            return document.querySelector('[class*="Controller_timeLabel__"]');
         },
         // ホイールイベント（音量)用にフッターを更新する
         getWheelEventFooter: function () {
