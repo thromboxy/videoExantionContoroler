@@ -2,9 +2,11 @@
 
 (function () {
 
-    CACHE_NAME = 'TwitchVideoSpeed2';
-
+    CACHE_NAME = 'twitch';
+    SPEED_CACHE_NAME = SPEED_CACHE_NAME_PRE + CACHE_NAME;
     NUM_KEY_FLAG = true;
+    
+    SITE_CONFIG = getConfig();
     
     /* サイト定義 */
     site = {
@@ -49,12 +51,13 @@
 
         /* ボタンを設置する */
         setButton: function () {
+            if (SITE_CONFIG.seek_button) {
             footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 ggANPd" style="font-size:200%;margin-left: 12px;padding-right:2px;padding-left:10px;">');
             footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 ggANPd" style="vertical-align:top;font-size:200%;margin-left: 6px;padding-right:10px;padding-left:6px;">');
-
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 ggANPd" style="vertical-align:top;font-size:200%;margin-left: 12px;padding-right:2px;padding-left:10px;">');
+            }
+            if (SITE_CONFIG.speed_button) footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 ggANPd" style="vertical-align:top;font-size:200%;margin-left: 12px;padding-right:2px;padding-left:10px;">');
             footer.insertAdjacentHTML('beforeend', '<span class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 ggANPd" id="' + SPEED_SPAN_ID + '" style="font-size:150%;margin-left: 5px;padding-right:10px;padding-left:5px;"></span>');
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 ggANPd" style="vertical-align:top;font-size:180%;margin-left: 2px;margin-right: 24px;padding-right:10px;padding-left:2px;">');
+            if (SITE_CONFIG.speed_button) footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="Layout-sc-nxg1ff-0 ScAttachedTooltipWrapper-sc-v8mg6d-0 ggANPd" style="vertical-align:top;font-size:180%;margin-left: 2px;margin-right: 24px;padding-right:10px;padding-left:2px;">');
         },
         /* 音量バーを設定する */
         setVolumeBar: function (volume) {

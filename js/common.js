@@ -18,7 +18,13 @@ SPEED_WIDTH = 0.05;
 VOLUME_WIDTH = 0.022;
 INITIALIZE_TIMER = 300;
 
-let CACHE_NAME, RESUME_CACHE_NAME;
+let CACHE_NAME, RESUME_CACHE_NAME, RESUME_CACHE, SPEED_CACHE_NAME;
+let SITE_CONFIG;
+
+const RESUME_CACHE_NAME_PRE = "ResumeTime_"
+const SPEED_CACHE_NAME_PRE = "VideoSpeed_"
+
+const NOW = Date.now();
 
 const SCRIPT_NAME = 'VideoController';
 const FOOTER_VIDEO_EXPANSION_CONTROLLER = 'vec_';
@@ -72,45 +78,64 @@ function removeBottun() {
 }
 
 /* キャッシュ読み込み */
-function readCache() {
-    if (localStorage.getItem(CACHE_NAME)) {
-        VIDEO_SPEED = Number(localStorage.getItem(CACHE_NAME));
-    }
-
+async function readCache() {
+    // if (localStorage.getItem(CACHE_NAME)) {
+    //     VIDEO_SPEED = Number(localStorage.getItem(CACHE_NAME));
+    // }
+    chrome.storage.local.get(SPEED_CACHE_NAME, (data) => {
+        VIDEO_SPEED = data[SPEED_CACHE_NAME] || 1;
+    });
 }
 
 /* レジュームキャッシュ読み込み */
-function readResumeCache() {
-    if (!RESUME_CACHE_NAME) return;
-    if (!site.getLiveFlag() && localStorage.getItem(RESUME_CACHE_NAME)) {
-        resumeTime = Number(localStorage.getItem(RESUME_CACHE_NAME));
+async function readResumeCache() {
+    if(!SITE_CONFIG.resume) return;
+    // console.log("readResumeCache")
+    RESUME_CACHE = await getVideoDataWithCleanup();
+    if (!site.getLiveFlag()) {
         window.setTimeout(function () {
-            video.currentTime = resumeTime;
+            if (!RESUME_CACHE) return;
+            video.currentTime = Number(RESUME_CACHE.playback_time);
         }, 1000);
     }
 }
 
 /* キャッシュセーブ */
-function saveCache() {
+async function saveCache() {
+    // if (!site.getLiveFlag()) {
+    //     localStorage.setItem(CACHE_NAME, VIDEO_SPEED);
+    // }
     if (!site.getLiveFlag()) {
-        localStorage.setItem(CACHE_NAME, VIDEO_SPEED);
+        VIDEO_SPEED = Number(VIDEO_SPEED.toFixed(2));
+        chrome.storage.local.set({ [SPEED_CACHE_NAME]: VIDEO_SPEED }, () => {
+            resolve();
+        });
     }
 }
 
 /* レジュームキャッシュセーブ */
 function saveResumeCache() {
+    // console.log("saveResumeCache")
+    if(!SITE_CONFIG.resume) return;
     if (resumeTime) {
         let timeDiff = Math.abs(video.currentTime - resumeTime);
         if (!timeDiff || timeDiff < 5) return;
+        resumeTime = video.currentTime;
+    } else {
+        resumeTime = video.currentTime;
+        return;
     }
-
     if (!RESUME_CACHE_NAME || video.paused) return;
     if (!site.getLiveFlag()) {
         if (video.currentTime < 120 || video.currentTime > video.duration - 120) {
-            localStorage.removeItem(RESUME_CACHE_NAME);
+            (async () => {
+                const deleted = await deleteVideoData();
+            })();
         } else {
-            localStorage.setItem(RESUME_CACHE_NAME, video.currentTime - 2);
             resumeTime = video.currentTime - 2;
+            (async () => {
+                await saveVideoData();
+            })();
         }
     }
 }
@@ -125,18 +150,32 @@ function setOnClick() {
     let speedSpanButton = document.querySelector('#' + SPEED_SPAN_ID);
     let speedUpButton = document.querySelector('#' + SPEED_UP_ID);
 
-    timeBackButton.onclick = function () {
-        setCurrentTime(-TIME_WIDTH);
-        this.blur();
-    };
-    timeAdvanceButton.onclick = function () {
-        setCurrentTime(TIME_WIDTH);
-        this.blur();
-    };
-    speedDownButton.onclick = function () {
-        VIDEO_SPEED = setPlaybackRate(-SPEED_WIDTH);
-        this.blur();
-    };
+    if (!SITE_CONFIG || SITE_CONFIG.seek_button) {
+        timeBackButton.onclick = function () {
+            setCurrentTime(-TIME_WIDTH);
+            this.blur();
+        };
+        timeAdvanceButton.onclick = function () {
+            setCurrentTime(TIME_WIDTH);
+            this.blur();
+        };
+        setHold(timeBackButton);
+        setHold(timeAdvanceButton);
+    }
+
+    if (!SITE_CONFIG || SITE_CONFIG.speed_button) {
+        speedDownButton.onclick = function () {
+            VIDEO_SPEED = setPlaybackRate(-SPEED_WIDTH);
+            this.blur();
+        };
+        speedUpButton.onclick = function () {
+            VIDEO_SPEED = setPlaybackRate(SPEED_WIDTH);
+            this.blur();
+        };
+
+        setHold(speedDownButton);
+        setHold(speedUpButton);
+    }
     speedSpanButton.onclick = function () {
         video.playbackRate = 1.00;
         VIDEO_SPEED = video.playbackRate;
@@ -144,15 +183,6 @@ function setOnClick() {
         saveCache();
         this.blur();
     };
-    speedUpButton.onclick = function () {
-        VIDEO_SPEED = setPlaybackRate(SPEED_WIDTH);
-        this.blur();
-    };
-
-    setHold(timeBackButton);
-    setHold(timeAdvanceButton);
-    setHold(speedDownButton);
-    setHold(speedUpButton);
 
     setHoldCanvas(site.getCanvas());
 
@@ -245,7 +275,7 @@ function setHoldCanvas(target) {
         }
     }
     function ChangeVideoPaused(video) {
-        if(videoPausedFlag === undefined) return;
+        if (videoPausedFlag === undefined) return;
         videoPausedFlag ? video.pause() : video.play();
     }
 }
@@ -257,51 +287,6 @@ function setEvent() {
     let seekButtons = document.querySelectorAll('[id^="' + FOOTER_VIDEO_EXPANSION_CONTROLLER + 'time_"]');
 
     document.body.addEventListener('keydown', keyEvent);
-    /* キーバインド設定 */
-    // document.body.addEventListener('keydown', event => {
-    //     if (event.key === 'a') {
-    //         document.querySelector('#' + SPEED_DOWN_ID).onclick();
-    //     } else if (event.key === 's') {
-    //         document.querySelector('#' + SPEED_SPAN_ID).onclick();
-    //     } else if (event.key === 'd') {
-    //         document.querySelector('#' + SPEED_UP_ID).onclick();
-    //     } else if (event.key === 'z') {
-    //         document.querySelector('#' + TIME_BACK_ID).onclick();
-    //     } else if (event.key === 'x') {
-    //         document.querySelector('#' + TIME_ADVANCE_ID).onclick();
-    //     } else if (event.key === '0' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         setCurrentTime(0.1 - video.currentTime);
-    //     } else if (event.key === '1' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 1) - video.currentTime);
-    //     } else if (event.key === '2' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 2) - video.currentTime);
-    //     } else if (event.key === '3' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 3) - video.currentTime);
-    //     } else if (event.key === '4' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 4) - video.currentTime);
-    //     } else if (event.key === '5' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 5) - video.currentTime);
-    //     } else if (event.key === '6' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 6) - video.currentTime);
-    //     } else if (event.key === '7' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 7) - video.currentTime);
-    //     } else if (event.key === '8' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 8) - video.currentTime);
-    //     } else if (event.key === '9' && NUM_KEY_FLAG && !site.getLiveFlag()) {
-    //         let videoTimeDiv = video.duration / 10;
-    //         setCurrentTime((videoTimeDiv * 9) - video.currentTime);
-    //     }
-
-    // });
-
 
     /* マウスオーバシークボタン */
     seekButtons.forEach(function (element) {
@@ -383,6 +368,16 @@ function setEvent() {
 }
 
 let keyEvent = (event) => {
+    const activeEl = document.activeElement;
+
+    // フォーカス中の要素のタイプ判定
+    const isInput = activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA';
+    const isContentEditable = activeEl.isContentEditable;
+
+    if (isInput || isContentEditable) {
+        // 入力中なのでキー処理は無効にする
+        return;
+    }
     if (event.key === 'a') {
         document.querySelector('#' + SPEED_DOWN_ID).onclick();
     } else if (event.key === 's') {
@@ -427,7 +422,8 @@ let keyEvent = (event) => {
 
 /* ビデオスピードを表示する */
 function showVideoSpeed() {
-    document.querySelector('#' + SPEED_SPAN_ID).innerText = VIDEO_SPEED.toFixed(2);
+    const doc = document.querySelector('#' + SPEED_SPAN_ID);
+    if (doc) doc.innerText = VIDEO_SPEED.toFixed(2);
 }
 
 /* 再生位置を設定 */
@@ -469,4 +465,84 @@ function setVolume(width) {
     }
     video.volume = volume;
     return volume;
+}
+
+const defaultConfig = {
+    youtube: {
+        seek_button: true,
+        speed_button: true,
+        resume: false
+    },
+    niconico: {
+        seek_button: true,
+        speed_button: true,
+        resume: true
+    },
+    amazon: {
+        seek_button: true,
+        speed_button: true,
+        // resume: false
+    },
+    twitch: {
+        seek_button: true,
+        speed_button: true,
+        // resume: false
+    },
+    tver: {
+        seek_button: true,
+        speed_button: true
+        //resume: false
+    }
+};
+
+async function getConfig() {
+    const result = await chrome.storage.sync.get('config');
+    SITE_CONFIG = result?.config?.[CACHE_NAME] || defaultConfig[CACHE_NAME];
+}
+
+//const THREE_MONTHS_MS = 1000 * 60 * 60 * 24 * 30 * 3; // 約3ヶ月
+const THREE_MONTHS_MS = 1000 * 60; // 約3ヶ月
+async function getVideoDataWithCleanup() {
+    // console.log("キャッシュアクセス", RESUME_CACHE_NAME);
+    return new Promise((resolve) => {
+        chrome.storage.local.get(RESUME_CACHE_NAME, (data) => {
+            const cache = data[RESUME_CACHE_NAME] || {};
+            if (!cache.saved_at) return;
+            RESUME_CACHE = cache;
+            resolve(cache);
+        });
+    });
+}
+
+
+/**
+ * サイト名を指定して、再生時間などのデータを保存する
+ * @param {string} siteName - 例: 'youtube'
+ * @param {object} data - 保存するデータ（id, playback_time など）
+ *                        例: { id: 'XXXX', playback_time: 12345 }
+ * @returns {Promise<void>}
+ */
+async function saveVideoData() {
+    // console.log("キャッシュ保存", RESUME_CACHE_NAME);
+    RESUME_CACHE = {
+        playback_time: video.currentTime,
+        saved_at: NOW
+    };
+    return new Promise((resolve) => {
+        chrome.storage.local.set({ [RESUME_CACHE_NAME]: RESUME_CACHE }, () => {
+            resolve();
+        });
+    });
+}
+
+async function deleteVideoData() {
+    chrome.storage.local.remove(RESUME_CACHE_NAME);
+    // console.log("キャッシュデータ削除", RESUME_CACHE_NAME);
+}
+
+function initializeVideoData() {
+    resumeTime = null;
+    // console.log("initializeVideoData");
+    site.setResumeCacheName();
+    RESUME_CACHE = getVideoDataWithCleanup();
 }

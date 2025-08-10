@@ -4,7 +4,6 @@
 ・Amazon Prime Video　(日本版のみ)
 ・Twitch
 ・TVer
-・dアニメストア (作成者が登録していないので更新終了)
 
 https://chrome.google.com/webstore/detail/video-expansion-controlle/ibpgfjbmoldfbhnhgafglglmpgnmammk
 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>拡張機能の設定</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+
+<body>
+  <h1>動画サイト別設定</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>サイト</th>
+        <th>シークボタン</th>
+        <th>速度変更ボタン</th>
+        <th>レジューム再生</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Youtube</td>
+        <td>
+          <label class="modern-checkbox">
+            <input type="checkbox" id="youtube_seek" />
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td>
+          <label class="modern-checkbox">
+            <input type="checkbox" id="youtube_speed" />
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td>
+          <label class="modern-checkbox">
+            <input type="checkbox" id="youtube_resume" />
+            <span class="checkmark"></span>
+          </label>
+        </td>
+      </tr>
+      <td>ニコニコ動画</td>
+      <td>
+        <label class="modern-checkbox">
+          <input type="checkbox" id="niconico_seek" />
+          <span class="checkmark"></span>
+        </label>
+      </td>
+      <td>
+        <label class="modern-checkbox">
+          <input type="checkbox" id="niconico_speed" />
+          <span class="checkmark"></span>
+        </label>
+      </td>
+      <td>
+        <label class="modern-checkbox">
+          <input type="checkbox" id="niconico_resume" />
+          <span class="checkmark"></span>
+        </label>
+      </td>
+      </tr>
+      <tr>
+        <td>Amazon Prime Video</td>
+        <td>
+          <label class="modern-checkbox">
+            <input type="checkbox" id="amazon_seek" />
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td>
+          <label class="modern-checkbox">
+            <input type="checkbox" id="amazon_speed" />
+            <span class="checkmark"></span>
+          </label>
+        </td>
+        <td>
+          <!-- IDがわからないのでレジューム再生できない-->
+        </td>
+      </tr>
+      </tr>
+      <td>Twitch</td>
+      <td>
+        <label class="modern-checkbox">
+          <input type="checkbox" id="twitch_seek" />
+          <span class="checkmark"></span>
+        </label>
+      </td>
+      <td>
+        <label class="modern-checkbox">
+          <input type="checkbox" id="twitch_speed" />
+          <span class="checkmark"></span>
+        </label>
+      </td>
+      <td>
+        <!--
+          <label class="modern-checkbox">
+            <input type="checkbox" id="twitch_resume" />
+            <span class="checkmark"></span>
+          </label>
+        -->
+      </td>
+      </tr>
+      </tr>
+      <td>TVer</td>
+      <td>
+        <label class="modern-checkbox">
+          <input type="checkbox" id="tver_seek" />
+          <span class="checkmark"></span>
+        </label>
+      </td>
+      <td>
+        <label class="modern-checkbox">
+          <input type="checkbox" id="tver_speed" />
+          <span class="checkmark"></span>
+        </label>
+      </td>
+      <td>
+        <!--
+          <label class="modern-checkbox">
+            <input type="checkbox" id="tver_resume" />
+            <span class="checkmark"></span>
+          </label>
+          -->
+      </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br />
+  <button id="save">保存</button>
+  <span id="status"></span>
+
+  <script src="options.js"></script>
+</body>
+
+</html>

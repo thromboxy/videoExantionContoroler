@@ -1,0 +1,93 @@
+/* モダンチェックボックスCSS */
+.modern-checkbox {
+  display: inline-block;
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.modern-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.modern-checkbox .checkmark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+.modern-checkbox:hover .checkmark {
+  background-color: #ccc;
+}
+
+.modern-checkbox input:checked ~ .checkmark {
+  background-color: #2196F3;
+  box-shadow: 0 0 6px #2196F3;
+}
+
+.modern-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.modern-checkbox input:checked ~ .checkmark:after {
+  display: block;
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+table {
+  font-size: 16px; /* 少し大きめに */
+  border-collapse: collapse;
+  width: 100%; /* 横いっぱいに広げる */
+  max-width: 1000px; /* 必要に応じて最大幅を設定 */
+  margin-bottom: 1.5em;
+  font-family: Arial, sans-serif;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 16px 20px;  /* 以前の10px→16pxに増量、横も20pxに */
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+thead th {
+  background-color: #1976d2;
+  color: white;
+  font-weight: bold;
+}
+
+tbody tr:hover {
+  background-color: #f5faff;
+}
+tbody tr {
+  height: 60px;
+}
+
+/* labelの縦位置調整 */
+label.modern-checkbox {
+  display: inline-flex;       /* flexで縦横中央揃え */
+  align-items: center;        /* 垂直方向中央 */
+  height: 100%;               /* 親tdの高さに合わせる（任意） */
+}

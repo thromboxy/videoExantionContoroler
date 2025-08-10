@@ -1,14 +1,36 @@
-html, body{
-    height: min-content;
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 10px;
+  width: 200px;
 }
-.no-touch{
-    user-select: none;
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer */
-    -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
-    -webkit-user-select: none; /* Chrome, Safari, and Opera */
-    -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+
+.container {
+  text-align: center;
 }
-.gray{
-    color: gray;
+
+h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+button {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #357ABD;
+}
+
+button:active {
+  background: #2c5f94;
 }

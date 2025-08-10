@@ -2,10 +2,13 @@
 
 (function () {
 
-    CACHE_NAME = 'TVerVideoSpeed';
+    CACHE_NAME = 'tver';
+    SPEED_CACHE_NAME = SPEED_CACHE_NAME_PRE + CACHE_NAME;
     let AD_SKIP_CACHE_NAME = 'SkipCacheFlag';
 
     NUM_KEY_FLAG = true;
+
+    SITE_CONFIG = getConfig();
 
     let posX, posY, singleClickFlag, clickTimerId, replayFlag;
 
@@ -47,18 +50,20 @@
                 button.click();
             }
         },
-        singleClick: function(e) {
-            if (e.target.classList[0] == 'controller_container__3ivc9') {
+        singleClick: function (e) {
+            console.log(e.target.classList[0]);
+            if (e.target.classList[0].startsWith('VodController_')) {
                 posX = window.scrollX;
                 posY = window.scrollY;
-                document.querySelector('button[class*="toggle-playing-button_controlButton__YRuPQ"]').click();
+                document.querySelector('button[class*="Play_icon__"]').click();
 
                 window.scroll(posX, posY);
             }
         },
-        doubleClick: function(e) {
-            if (e.target.classList[0] == 'controller_container__3ivc9') {
-                document.querySelector('img[alt="全画面').click();
+        doubleClick: function (e) {
+            console.log(e.target.classList[0]);
+            if (e.target.classList[0].startsWith('VodController_')) {
+                document.querySelector('button[class*="Fullscreen_icon__"]').click();
             }
         },
         getLiveFlag: function () {
@@ -67,12 +72,14 @@
         /* ボタンを設置する */
         setButton: function () {
             //footer.insertAdjacentHTML('afterend', '<label for="' + SKIP_CHECKBOX_ID + '" id="' + SKIP_CHECKBOX_LABEL + '" title="一部CMはｽｷｯﾌﾟできません" style="font-size: 13px;"><input type="checkbox" id="' + SKIP_CHECKBOX_ID + '" style="vertical-align: middle; margin-right: 4px;">CMｽｷｯﾌﾟ</label>');
-            footer.insertAdjacentHTML('afterend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" style="font-size:25px;margin-left: 2px;margin-right: 12px;padding-right:5px;padding-left:2px;">');
+            if (SITE_CONFIG.speed_button) footer.insertAdjacentHTML('afterend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" style="font-size:25px;margin-left: 2px;margin-right: 12px;padding-right:5px;padding-left:2px;">');
             footer.insertAdjacentHTML('afterend', '<span class="f15586js" id="' + SPEED_SPAN_ID + '" style="font-size: 15px;margin-left: 3px;padding-right:10px;padding-left:10px;"></span>');
-            footer.insertAdjacentHTML('afterend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<" style="font-size:25px;margin-left: 12px;padding-left:10px;">');
+            if (SITE_CONFIG.speed_button) footer.insertAdjacentHTML('afterend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<" style="font-size:25px;margin-left: 12px;padding-left:10px;">');
+            if (SITE_CONFIG.seek_button) {
+                footer.insertAdjacentHTML('afterend', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" style="font-size:20px;margin-left: 12px;padding-right:10px;padding-left:10px;">');
+                footer.insertAdjacentHTML('afterend', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" style="font-size:20px;margin-left: 24px;padding-right:10px;padding-left:10px;">');
+            }
 
-            footer.insertAdjacentHTML('afterend', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" style="font-size:20px;margin-left: 12px;padding-right:10px;padding-left:10px;">');
-            footer.insertAdjacentHTML('afterend', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" style="font-size:20px;margin-left: 24px;padding-right:10px;padding-left:10px;">');
 
         },
 
@@ -115,6 +122,16 @@
             // var show = volume * 100;
             // var slider = document.querySelector('.volume-slider_active__n2cgm');
             // slider.setAttribute('style', 'width: ' + show.toFixed(0) + '%;');
+        },
+        /* レジュームキャッシュ名設定 */
+        setResumeCacheName: function () {
+            //console.log("setResumeCacheName");
+            let sm = location.href.match(/(?<=episodes\/)[^/]+/)[1];
+            if (sm) {
+                RESUME_CACHE_NAME = RESUME_CACHE_NAME_PRE + CACHE_NAME + "_" + sm;
+            } else {
+                RESUME_CACHE_NAME = null;
+            }
         }
     };
 
@@ -179,6 +196,7 @@
                 let canvas = site.getCanvas();
                 if (!video || !canvas) {
                     clearInterval(interval);
+                    initializeVideoData();
                     core.initialize();
                     replayFlag = true;
                     return;
@@ -192,11 +210,13 @@
                 if (videoSrc != videoSrcOld) {
                     videoSrcOld = videoSrc;
                     clearInterval(interval);
+                    initializeVideoData();
                     core.initialize();
                     return;
                 }
             }, 500);
         },
     };
+    initializeVideoData();
     core.initialize();
 })();

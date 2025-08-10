@@ -2,7 +2,11 @@
 
 (function () {
 
-    CACHE_NAME = 'YoutubeVideoSpeed';
+    CACHE_NAME = 'youtube';
+    SPEED_CACHE_NAME = SPEED_CACHE_NAME_PRE + CACHE_NAME;
+    NUM_KEY_FLAG = true;
+
+    SITE_CONFIG = getConfig();
 
     /* サイト定義 */
     site = {
@@ -28,10 +32,10 @@
                 return player.querySelector(selecter);
             }
         },
-        singleClick: function() {
+        singleClick: function () {
             return null;
         },
-        doubleClick: function() {
+        doubleClick: function () {
             return null;
         },
         getLiveFlag: function () {
@@ -51,12 +55,14 @@
         /* ボタンを設置する */
         setButton: function () {
             removeBottun();
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;margin-left: 10px;padding-right:15px;">');
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;margin-left: 10px;padding-right:15px;">');
+            if (SITE_CONFIG.seek_button) {
+                footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;margin-left: 10px;padding-right:15px;">');
+                footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:180%;margin-left: 10px;padding-right:15px;">');
+            }
 
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:220%;margin-left: 14px;width:22px">');
+            if (SITE_CONFIG.speed_button) footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:220%;margin-left: 14px;width:22px">');
             footer.insertAdjacentHTML('beforeend', '<span class="ytp-time-display" id="' + SPEED_SPAN_ID + '" style="font-size:130%;margin-left: 5px;padding-right:10px;padding-left:0px;"></span>');
-            footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:220%;padding-right:10px;">');
+            if (SITE_CONFIG.speed_button) footer.insertAdjacentHTML('beforeend', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="ytp-miniplayer-button ytp-button" style="vertical-align:top;font-size:220%;padding-right:10px;">');
 
         },
         /* 音量バーを設定する */
@@ -67,13 +73,23 @@
             var panel = document.querySelector('.ytp-volume-panel');
             panel.setAttribute('aria-valuenow', show.toFixed(0));
             panel.setAttribute('aria-valuetext', show.toFixed(0) + '% 音量');
+        },
+        /* レジュームキャッシュ名設定 */
+        setResumeCacheName: function () {
+            //console.log("setResumeCacheName");
+            let sm = location.href.match(/watch\?v=([^&]{11})/);
+            if (sm) {
+                RESUME_CACHE_NAME = RESUME_CACHE_NAME_PRE + CACHE_NAME + "_" + sm[1];
+            } else {
+                RESUME_CACHE_NAME = null;
+            }
         }
     };
 
     /* 処理本体 */
     core = {
         /* 初期化 */
-        initialize: function () {
+        initialize: async function () {
             //console.log(SCRIPT_NAME, 'initialize...');
 
             /* 主要要素が取得できるまで読み込み待ち */
@@ -92,8 +108,10 @@
                 return;
             }
 
+
             /* キャッシュ読み込み */
             readCache();
+            readResumeCache();
 
             liveFlag = site.getLiveFlag();
             if (liveFlag) {
@@ -123,6 +141,7 @@
 
                 if (!video) {
                     clearInterval(interval);
+                    initializeVideoData();
                     core.initialize();
                     return;
                 }
@@ -138,10 +157,14 @@
                 if (videoSrc != videoSrcOld) {
                     videoSrcOld = videoSrc;
                     clearInterval(interval);
+                    initializeVideoData();
                     core.initialize();
                 }
+
+                saveResumeCache();
             }, 500);
         },
     };
+    initializeVideoData();
     core.initialize();
 })();

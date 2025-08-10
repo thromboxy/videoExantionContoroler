@@ -7,11 +7,11 @@
     let NEED_RESUME;
     NEED_RESUME = true;
 
-    CACHE_NAME = 'NiconicoVideoSpeed';
+    CACHE_NAME = 'niconico';
+    SPEED_CACHE_NAME = SPEED_CACHE_NAME_PRE + CACHE_NAME;
+    SITE_CONFIG = getConfig();
 
     NUM_KEY_FLAG = true;
-
-
 
     // 広告非表示等
     sheet.insertRule('.ActionButton.PlaybackRateButton, .SideFollowAdContainer, #RectangleAd, .NicoSpotAdContainer, .PreVideoStartPremiumLinkOnEconomyTimeContainer, .MainContainer-marquee, .PlayerOverlayBottomMessage.PreVideoStartPremiumLinkContainer { display:none; style:"";}', 1);
@@ -24,9 +24,9 @@
         },
         getFooter: function () {
             var parent = document.querySelector('div[data-styling-id="«r4»"]');
-            if(parent){
+            if (parent) {
                 return parent.childNodes[0].childNodes[1].childNodes[4];
-            }else if(document.querySelector('div[data-styling-id="«r2»"]')){
+            } else if (document.querySelector('div[data-styling-id="«r2»"]')) {
                 return document.querySelector('div[data-styling-id="«r2»"]').childNodes[0].childNodes[0].childNodes[1].childNodes[1].childNodes[4];
             }
             return null;
@@ -36,9 +36,9 @@
         },
         getSeekBar: function () {
             var parent = document.querySelector('div[data-styling-id="«r4»"]');
-            if(parent){
+            if (parent) {
                 return parent.childNodes[0].childNodes[0].childNodes[0];
-            }else if(document.querySelector('div[data-styling-id="«r2»"]')){
+            } else if (document.querySelector('div[data-styling-id="«r2»"]')) {
                 return document.querySelector('div[data-styling-id="«r2»"]').childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[0];
             }
             return null;
@@ -68,25 +68,26 @@
             // window.scroll(posX, posY);
         },
         doubleClick: function (e) {
-            if (!e.target.getAttribute('role') && e.target.tagName == 'DIV'){
+            if (e.target.tagName == 'DIV' || e.target.tagName == 'VIDEO') {
                 if (document.querySelector('button[aria-label="全画面表示する"]')) {
                     document.querySelector('button[aria-label="全画面表示する"]').click();
                 } else {
                     document.querySelector('button[aria-label="全画面表示を終了"]').click();
                 }
-            }   
+            }
         },
         getLiveFlag: function () {
             return false;
         },
         /* ボタンを設置する */
         setButton: function () {
-            footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="cursor_pointer" style="font-size:120%;margin-left: 6px;color: white;">');
-            footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="cursor_pointer" style="font-size:120%;color: white;">');
-
-            footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="cursor_pointer" style="font-size:120%;margin-left: 6px;color: white;">');
+            if (SITE_CONFIG.seek_button) {
+                footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + TIME_BACK_ID + '" value="<<" class="cursor_pointer" style="font-size:120%;margin-left: 6px;color: white;">');
+                footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + TIME_ADVANCE_ID + '" value=">>" class="cursor_pointer" style="font-size:120%;color: white;">');
+            }
+            if (SITE_CONFIG.speed_button) footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + SPEED_DOWN_ID + '" value="<"  class="cursor_pointer" style="font-size:120%;margin-left: 6px;color: white;">');
             footer.insertAdjacentHTML('beforebegin', '<span class="ControllerButton-inner" id="' + SPEED_SPAN_ID + '" style="font-size:110%;"></span>');
-            footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="cursor_pointer" style="font-size:120%;color: white;">');
+            if (SITE_CONFIG.speed_button) footer.insertAdjacentHTML('beforebegin', '<input type="button" id="' + SPEED_UP_ID + '" value=">" class="cursor_pointer" style="font-size:120%;color: white;">');
 
         },
         /* 音量バーを設定する */
@@ -95,9 +96,10 @@
         },
         /* レジュームキャッシュ名設定 */
         setResumeCacheName: function () {
-            let sm = location.href.match('/watch/[a-z][a-z][0-9]{2,20}');
+            //console.log("setResumeCacheName");
+            let sm = location.href.match(/watch\/([^\/?#]+)/);
             if (sm) {
-                RESUME_CACHE_NAME = CACHE_NAME + sm;
+                RESUME_CACHE_NAME = RESUME_CACHE_NAME_PRE + CACHE_NAME+ "_"+ sm[1];
             } else {
                 RESUME_CACHE_NAME = null;
             }
@@ -137,30 +139,21 @@
                 return;
             }
 
-            resumeTime = 0;
+            initializeVideoData();
 
-            if(NEED_RESUME){
-                /* キャッシュ読み込み */
-                readCache();
-                site.setResumeCacheName();
-                readResumeCache();
-            }else{
-                NEED_RESUME = true;
-            }
+            readCache();
+            readResumeCache();
 
             videoSrc = site.getVideoSrc();
-
-
 
             if (!document.querySelector('#' + TIME_BACK_ID)) {
                 site.setButton();
                 setOnClick();
                 setEvent();
-            }else if (RESET_CANVAS_FLAG) {
+            } else if (RESET_CANVAS_FLAG) {
                 setHoldCanvas(site.getCanvas());
                 RESET_CANVAS_FLAG = false;
             }
-            //canvas.addEventListener("click", site.canvasClick);
 
             video.playbackRate = VIDEO_SPEED;
             showVideoSpeed();
@@ -172,36 +165,31 @@
         setInterval: function () {
             // console.log(SCRIPT_NAME, 'setInterval...');
             interval = window.setInterval(function () {
-                // console.log(SCRIPT_NAME, 'interval...');
+                //console.log(SCRIPT_NAME, 'interval...');
                 video = site.getVideo();
 
                 if (!video) {
                     NEED_RESUME = true;
                     clearInterval(interval);
+                    initializeVideoData();
                     core.initialize();
                     return;
-                }else if(!document.querySelector('#' + SPEED_SPAN_ID)) {
+                } else if (!document.querySelector('#' + SPEED_SPAN_ID)) {
                     NEED_RESUME = false;
                     clearInterval(interval);
+                    initializeVideoData();
                     core.initialize();
                     return;
                 }
-
-                
-
                 videoSrc = site.getVideoSrc();
                 video.playbackRate = VIDEO_SPEED;
                 showVideoSpeed();
-
-                // if (site.getSupporterViewVisibility()) {
-                //     RESET_CANVAS_FLAG = true;
-                //     site.clickNextButton();
-                // }
 
                 if (videoSrc != videoSrcOld) {
                     NEED_RESUME = true;
                     videoSrcOld = videoSrc;
                     clearInterval(interval);
+                    initializeVideoData();
                     core.initialize();
                 }
                 saveResumeCache();
@@ -209,5 +197,7 @@
             }, 200);
         },
     };
+
+    initializeVideoData();
     core.initialize();
 })();

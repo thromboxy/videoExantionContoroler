@@ -25,12 +25,7 @@
       "js": [ "js/common.js", "js/main-tver.js" ],
       "matches": [ "https://tver.jp/*" ],
       "run_at": "document_end"
-   }, {
-      "all_frames": false,
-      "js": [ "js/common.js", "js/main-danime.js" ],
-      "matches": [ "https://anime.dmkt-sp.jp/*" ],
-      "run_at": "document_end"
-   } ],
+   }],
    "content_security_policy": {
       "default-src": "self"
    },
@@ -40,12 +35,13 @@
       "48": "icon/icon48.png",
       "128": "icon/icon128.png"
    },
+   "options_page": "options.html",
+   "permissions": ["storage"],
    "action": {
-      "default_popup": "popup.html",
-      "default_title": "options"
+      "default_popup": "popup.html"
    },
    "manifest_version": 3,
    "name": "Video Expansion Controller",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.6.8"
+   "version": "2.0.0"
 }
