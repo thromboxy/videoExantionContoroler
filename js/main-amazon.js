@@ -17,9 +17,9 @@
             return document.querySelector('.ffszj3z.f8hspre.f1icw8u');
         },
         getFooter: function () {
-            let webPlayer = document.querySelector('#dv-web-player-2 .fage5o5.f1mic5r1');
-            if (!webPlayer) webPlayer = document.querySelector('#dv-web-player .fage5o5.f1mic5r1');
-            return webPlayer;
+            let footer = document.querySelector('#dv-web-player-2 .fage5o5.f1mic5r1');
+            if (!footer) footer = document.querySelector('#dv-web-player .fage5o5.f1mic5r1');
+            return footer;
         },
         getVideo: function () {
             return document.querySelector('video[src*="blob:https://www.amazon.co.jp/"]');
@@ -37,8 +37,12 @@
         singleClick: function () {
             return null;
         },
-        doubleClick: function () {
-            return null;
+        doubleClick: function (e) {
+            if (e.target.tagName == 'IMG') return;
+            let button = document.querySelector('#dv-web-player-2 .atvwebplayersdk-fullscreen-button');
+            if (!button) button = document.querySelector('#dv-web-player .atvwebplayersdk-fullscreen-button');
+            if(!button) return;
+            button.click();            
         },
         getLiveFlag: function () {
             return false;

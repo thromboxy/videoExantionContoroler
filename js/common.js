@@ -246,7 +246,7 @@ function setHoldCanvas(target) {
         holding_flag = 0;
         VIDEO_SPEED = TEMP_VIDEO_SPEED;
         video.playbackRate = VIDEO_SPEED;
-        window.setTimeout(ChangeVideoPaused, 25, site.getVideo());
+        window.setTimeout(ChangeVideoPaused, 5, site.getVideo());
         window.clearTimeout(holdTimerId);
     });
     target.addEventListener('mouseout', e => {
