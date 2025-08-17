@@ -99,7 +99,7 @@
             //console.log("setResumeCacheName");
             let sm = location.href.match(/watch\/([^\/?#]+)/);
             if (sm) {
-                RESUME_CACHE_NAME = RESUME_CACHE_NAME_PRE + CACHE_NAME+ "_"+ sm[1];
+                RESUME_CACHE_NAME = RESUME_CACHE_NAME_PRE + CACHE_NAME + "_" + sm[1];
             } else {
                 RESUME_CACHE_NAME = null;
             }
@@ -142,11 +142,12 @@
             initializeVideoData();
 
             readCache();
+            site.setResumeCacheName();
             readResumeCache();
 
             videoSrc = site.getVideoSrc();
 
-            if (!document.querySelector('#' + TIME_BACK_ID)) {
+            if (!document.querySelector('#' + SPEED_SPAN_ID)) {
                 site.setButton();
                 setOnClick();
                 setEvent();

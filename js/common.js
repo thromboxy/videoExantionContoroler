@@ -505,7 +505,7 @@ const THREE_MONTHS_MS = 1000 * 60; // 約3ヶ月
 async function getVideoDataWithCleanup() {
     // console.log("キャッシュアクセス", RESUME_CACHE_NAME);
     return new Promise((resolve) => {
-        chrome.storage.local.get(RESUME_CACHE_NAME, (data) => {
+        chrome.storage.sync.get(RESUME_CACHE_NAME, (data) => {
             const cache = data[RESUME_CACHE_NAME] || {};
             if (!cache.saved_at) return;
             RESUME_CACHE = cache;
@@ -529,14 +529,14 @@ async function saveVideoData() {
         saved_at: NOW
     };
     return new Promise((resolve) => {
-        chrome.storage.local.set({ [RESUME_CACHE_NAME]: RESUME_CACHE }, () => {
+        chrome.storage.sync.set({ [RESUME_CACHE_NAME]: RESUME_CACHE }, () => {
             resolve();
         });
     });
 }
 
 async function deleteVideoData() {
-    chrome.storage.local.remove(RESUME_CACHE_NAME);
+    chrome.storage.sync.remove(RESUME_CACHE_NAME);
     // console.log("キャッシュデータ削除", RESUME_CACHE_NAME);
 }
 
