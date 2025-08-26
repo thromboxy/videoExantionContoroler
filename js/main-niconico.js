@@ -13,6 +13,7 @@
 
     NUM_KEY_FLAG = true;
 
+    let speedMoniter;
     // 広告非表示等
     sheet.insertRule('.ActionButton.PlaybackRateButton, .SideFollowAdContainer, #RectangleAd, .NicoSpotAdContainer, .PreVideoStartPremiumLinkOnEconomyTimeContainer, .MainContainer-marquee, .PlayerOverlayBottomMessage.PreVideoStartPremiumLinkContainer { display:none; style:"";}', 1);
 
@@ -159,6 +160,16 @@
             video.playbackRate = VIDEO_SPEED;
             showVideoSpeed();
             videoSrcOld = videoSrc;
+            speedMoniter = setInterval(() => {
+                if (!video) return;
+                if (Math.abs(video.playbackRate - VIDEO_SPEED) > 0.01) {
+                    video.playbackRate = VIDEO_SPEED;
+                    video.defaultPlaybackRate = VIDEO_SPEED;
+                    showVideoSpeed();
+                    // console.log("再設定:", video.playbackRate);
+                    
+                }
+            }, 10); // 0.01秒ごとにチェック
             core.setInterval();
         },
 
@@ -172,12 +183,14 @@
                 if (!video) {
                     NEED_RESUME = true;
                     clearInterval(interval);
+                    clearInterval(speedMoniter);
                     initializeVideoData();
                     core.initialize();
                     return;
                 } else if (!document.querySelector('#' + SPEED_SPAN_ID)) {
                     NEED_RESUME = false;
                     clearInterval(interval);
+                    clearInterval(speedMoniter);
                     initializeVideoData();
                     core.initialize();
                     return;
@@ -190,12 +203,13 @@
                     NEED_RESUME = true;
                     videoSrcOld = videoSrc;
                     clearInterval(interval);
+                    clearInterval(speedMoniter);
                     initializeVideoData();
                     core.initialize();
                 }
                 saveResumeCache();
 
-            }, 200);
+            }, 1000);
         },
     };
 

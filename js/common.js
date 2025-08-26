@@ -449,6 +449,7 @@ function setPlaybackRate(width) {
         rate = 0.1;
     }
     video.playbackRate = rate;
+    video.defaultPlaybackRate = rate;
     VIDEO_SPEED = rate;
     saveCache();
     showVideoSpeed();
