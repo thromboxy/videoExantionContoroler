@@ -139,7 +139,7 @@
 
             videoSrc = site.getVideoSrc();
 
-            if (!document.querySelector('#' + TIME_BACK_ID)) {
+            if (!document.querySelector('#' + SPEED_SPAN_ID)) {
                 site.setButton();
                 // site.setSkipButton();
                 setOnClick();
