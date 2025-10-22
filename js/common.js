@@ -89,13 +89,15 @@ async function readCache() {
 
 /* レジュームキャッシュ読み込み */
 async function readResumeCache() {
-    if(!SITE_CONFIG.resume) return;
+    if (!SITE_CONFIG.resume) return;
     // console.log("readResumeCache")
     RESUME_CACHE = await getVideoDataWithCleanup();
     if (!site.getLiveFlag()) {
         window.setTimeout(function () {
-            if (!RESUME_CACHE) return;
-            video.currentTime = Number(RESUME_CACHE.playback_time);
+            const time = Number(RESUME_CACHE.playback_time);
+            if (Number.isFinite(time) && time >= 0) {
+                video.currentTime = Number(RESUME_CACHE.playback_time);
+            }
         }, 1000);
     }
 }
@@ -116,7 +118,7 @@ async function saveCache() {
 /* レジュームキャッシュセーブ */
 function saveResumeCache() {
     // console.log("saveResumeCache")
-    if(!SITE_CONFIG.resume) return;
+    if (!SITE_CONFIG.resume) return;
     if (resumeTime) {
         let timeDiff = Math.abs(video.currentTime - resumeTime);
         if (!timeDiff || timeDiff < 5) return;
@@ -150,7 +152,7 @@ function setOnClick() {
     let speedSpanButton = document.querySelector('#' + SPEED_SPAN_ID);
     let speedUpButton = document.querySelector('#' + SPEED_UP_ID);
 
-    if (!SITE_CONFIG || SITE_CONFIG.seek_button) {
+    if (SITE_CONFIG && SITE_CONFIG.seek_button) {
         timeBackButton.onclick = function () {
             setCurrentTime(-TIME_WIDTH);
             this.blur();
@@ -163,7 +165,7 @@ function setOnClick() {
         setHold(timeAdvanceButton);
     }
 
-    if (!SITE_CONFIG || SITE_CONFIG.speed_button) {
+    if (SITE_CONFIG && SITE_CONFIG.speed_button) {
         speedDownButton.onclick = function () {
             VIDEO_SPEED = setPlaybackRate(-SPEED_WIDTH);
             this.blur();
@@ -293,12 +295,15 @@ function setEvent() {
 
         element.addEventListener("mouseover", function () {
             document.addEventListener('wheel', mouseOverFooter, {
-                passive: false
+                passive: false,
+                capture: true
+
             });
         });
         element.addEventListener("mouseout", function () {
             document.removeEventListener('wheel', mouseOverFooter, {
-                passive: false
+                passive: false,
+                capture: true
             });
         });
     });
@@ -308,12 +313,14 @@ function setEvent() {
 
         element.addEventListener("mouseover", function () {
             document.addEventListener('wheel', mouseOverSpeedButton, {
-                passive: false
+                passive: false,
+                capture: true
             });
         });
         element.addEventListener("mouseout", function () {
             document.removeEventListener('wheel', mouseOverSpeedButton, {
-                passive: false
+                passive: false,
+                capture: true
             });
         });
     });
@@ -322,12 +329,14 @@ function setEvent() {
     if (seekBar) {
         seekBar.addEventListener("mouseover", function () {
             document.addEventListener('wheel', mouseOverSeeekBar, {
-                passive: false
+                passive: false,
+                capture: true
             });
         });
         seekBar.addEventListener("mouseout", function () {
             document.removeEventListener('wheel', mouseOverSeeekBar, {
-                passive: false
+                passive: false,
+                capture: true
             });
         });
     }
@@ -335,6 +344,7 @@ function setEvent() {
     /* マウスオーバシークバー */
     function mouseOverSeeekBar(event) {
         event.preventDefault();
+        event.stopPropagation();
         let time = video.currentTime;
         if (event.wheelDelta > 0) {
             setCurrentTime(TIME_WHEEL_WIDTH);
@@ -346,6 +356,7 @@ function setEvent() {
     /* マウスオーバフッター */
     function mouseOverFooter(event) {
         event.preventDefault();
+        event.stopPropagation();
         let volume;
         if (event.wheelDelta > 0) {
             volume = setVolume(VOLUME_WIDTH);
@@ -358,6 +369,7 @@ function setEvent() {
     /* マウスオーバスピードボタン */
     function mouseOverSpeedButton(event) {
         event.preventDefault();
+        event.stopPropagation();
         if (event.wheelDelta > 0) {
             setPlaybackRate(SPEED_WIDTH);
         } else {
@@ -502,13 +514,11 @@ async function getConfig() {
 }
 
 //const THREE_MONTHS_MS = 1000 * 60 * 60 * 24 * 30 * 3; // 約3ヶ月
-const THREE_MONTHS_MS = 1000 * 60; // 約3ヶ月
 async function getVideoDataWithCleanup() {
     // console.log("キャッシュアクセス", RESUME_CACHE_NAME);
     return new Promise((resolve) => {
         chrome.storage.sync.get(RESUME_CACHE_NAME, (data) => {
             const cache = data[RESUME_CACHE_NAME] || {};
-            if (!cache.saved_at) return;
             RESUME_CACHE = cache;
             resolve(cache);
         });
