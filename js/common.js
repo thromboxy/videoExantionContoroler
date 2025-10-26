@@ -91,7 +91,7 @@ async function readCache() {
 async function readResumeCache() {
     if (!SITE_CONFIG.resume) return;
     // console.log("readResumeCache")
-    RESUME_CACHE = await getVideoDataWithCleanup();
+    RESUME_CACHE = await getVideoData();
     if (!site.getLiveFlag()) {
         window.setTimeout(function () {
             const time = Number(RESUME_CACHE.playback_time);
@@ -513,16 +513,51 @@ async function getConfig() {
     SITE_CONFIG = result?.config?.[CACHE_NAME] || defaultConfig[CACHE_NAME];
 }
 
-//const THREE_MONTHS_MS = 1000 * 60 * 60 * 24 * 30 * 3; // 約3ヶ月
-async function getVideoDataWithCleanup() {
+async function getVideoData() {
     // console.log("キャッシュアクセス", RESUME_CACHE_NAME);
     return new Promise((resolve) => {
-        chrome.storage.sync.get(RESUME_CACHE_NAME, (data) => {
+        chrome.storage.local.get(RESUME_CACHE_NAME, (data) => {
             const cache = data[RESUME_CACHE_NAME] || {};
             RESUME_CACHE = cache;
             resolve(cache);
         });
     });
+}
+
+const ONE_MONTH_MS = 1000 * 60 * 60 * 24 * 30; // 約30日
+async function cleanOldData() {
+  const now = Date.now();
+  const prefix = RESUME_CACHE_NAME_PRE + CACHE_NAME;
+
+  // すべてのデータを取得
+  const allData = await chrome.storage.local.get(null);
+
+  // 対象データをフィルタ（キーが prefix に一致するもの）
+  const targetEntries = Object.entries(allData).filter(([key]) =>
+    key.startsWith(prefix)
+  );
+
+  const keysToDelete = [];
+
+  for (const [key, value] of targetEntries) {
+    // データが正しい形式か確認
+    if (!value || typeof value.saved_at !== "number") continue;
+
+    // 1か月以上経過したものを削除対象に
+    if (now - value.saved_at > ONE_MONTH_MS) {
+      keysToDelete.push(key);
+    }
+  }
+
+  // 古いデータを削除
+  if (keysToDelete.length > 0) {
+    await chrome.storage.local.remove(keysToDelete);
+    console.log(`削除完了: ${keysToDelete.length} 件`);
+  } else {
+    console.log("削除対象データなし");
+  }
+
+  console.log("クリーンアップ完了");
 }
 
 
@@ -540,14 +575,14 @@ async function saveVideoData() {
         saved_at: NOW
     };
     return new Promise((resolve) => {
-        chrome.storage.sync.set({ [RESUME_CACHE_NAME]: RESUME_CACHE }, () => {
+        chrome.storage.local.set({ [RESUME_CACHE_NAME]: RESUME_CACHE }, () => {
             resolve();
         });
     });
 }
 
 async function deleteVideoData() {
-    chrome.storage.sync.remove(RESUME_CACHE_NAME);
+    chrome.storage.local.remove(RESUME_CACHE_NAME);
     // console.log("キャッシュデータ削除", RESUME_CACHE_NAME);
 }
 
@@ -555,5 +590,6 @@ function initializeVideoData() {
     resumeTime = null;
     // console.log("initializeVideoData");
     site.setResumeCacheName();
-    RESUME_CACHE = getVideoDataWithCleanup();
+    RESUME_CACHE = getVideoData();
+    cleanOldData();
 }
