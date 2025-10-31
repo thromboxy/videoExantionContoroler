@@ -87,6 +87,12 @@
             } else {
                 RESUME_CACHE_NAME = null;
             }
+        },
+        hideGridExpandButton: function () {
+            let button = document.querySelector('button.ytp-fullscreen-grid-expand-button');
+            if (button) {
+                button.style.display = 'none';
+            }
         }
     };
 
@@ -116,6 +122,8 @@
             /* キャッシュ読み込み */
             readCache();
             readResumeCache();
+
+            site.hideGridExpandButton();
 
             liveFlag = site.getLiveFlag();
             if (liveFlag) {
