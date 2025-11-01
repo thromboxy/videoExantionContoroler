@@ -345,7 +345,6 @@ function setEvent() {
     function mouseOverSeeekBar(event) {
         event.preventDefault();
         event.stopPropagation();
-        let time = video.currentTime;
         if (event.wheelDelta > 0) {
             setCurrentTime(TIME_WHEEL_WIDTH);
         } else {
@@ -357,13 +356,11 @@ function setEvent() {
     function mouseOverFooter(event) {
         event.preventDefault();
         event.stopPropagation();
-        let volume;
         if (event.wheelDelta > 0) {
-            volume = setVolume(VOLUME_WIDTH);
+            setCurrentTime(TIME_WIDTH);
         } else {
-            volume = setVolume(-VOLUME_WIDTH);
+            setCurrentTime(-TIME_WIDTH);
         }
-        site.setVolumeBar(volume);
     }
 
     /* マウスオーバスピードボタン */
